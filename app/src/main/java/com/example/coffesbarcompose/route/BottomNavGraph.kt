@@ -10,19 +10,19 @@ import com.example.coffesbarcompose.screen.home.HomeScreen
 
 @Composable
 fun BottomNavGraph(navController: NavHostController) {
+
     NavHost(navController = navController, startDestination = BottomBarScreen.Home.route) {
         composable(BottomBarScreen.Home.route) {
             HomeScreen()
-        }
-
-        composable(BottomBarScreen.Cart.route) {
-            CartScreen()
         }
 
         composable(BottomBarScreen.Favorite.route) {
             FavoriteScreen()
         }
 
+        composable(BottomBarScreen.Cart.route) {
+            CartScreen()
+        }
     }
 }
 

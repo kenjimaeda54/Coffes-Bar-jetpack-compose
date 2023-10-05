@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.coffesbarcompose.route.BottomBarScreen
+import com.example.coffesbarcompose.route.BottomCustomNavigation
 import com.example.coffesbarcompose.route.BottomNavGraph
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -25,56 +26,11 @@ import com.example.coffesbarcompose.route.BottomNavGraph
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    Scaffold(bottomBar = { ButtomBar(navController = navController) }) {
-        BottomNavGraph(navController = navController)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    Scaffold(bottomBar = { BottomCustomNavigation(navHostController = navController, navDestination = currentDestination) }) {
+      BottomNavGraph(navController = navController)
     }
 
-
-}
-
-@Composable
-fun ButtomBar(navController: NavHostController) {
-    val screens = listOf(
-        BottomBarScreen.Home,
-        BottomBarScreen.Favorite,
-        BottomBarScreen.Cart
-    )
-
-    BottomNavigation {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-
-        screens.forEach {
-            AddItem(
-                navController,
-                currentDestination,
-                screen = it,
-            )
-        }
-
-    }
-}
-
-@Composable
-fun RowScope.AddItem(
-    navController: NavHostController,
-    currentDestination: NavDestination?,
-    screen: BottomBarScreen
-) {
-
-    //usando o popUp caso a pessoa clique no botao inferior de voltar , launchSingleTop possilibita sair do App
-    BottomNavigationItem(selected = currentDestination?.hierarchy?.any {
-        it.route == screen.route
-    } == true, onClick = {
-        navController.navigate(screen.route) {
-            popUpTo(navController.graph.findStartDestination().id)
-            launchSingleTop = true
-        }
-    }, icon = {
-        Icon(
-            painter = painterResource(id = screen.icon),
-            contentDescription = "Icon bottom navigation"
-        )
-    })
 
 }
