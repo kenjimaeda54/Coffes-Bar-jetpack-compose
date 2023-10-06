@@ -17,13 +17,15 @@ import androidx.core.view.WindowCompat
 
 
 private val LightColorScheme = lightColorScheme(
-    primary =  black,
+    primary =  darkBrown,
+    primaryContainer = ligthBrown ,
     secondary = white,
     tertiary = beige,
     error = red,
     outline = gray,
     outlineVariant = grayDark,
     tertiaryContainer = brow,
+
 
 )
 

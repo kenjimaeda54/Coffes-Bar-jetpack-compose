@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -14,8 +16,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+
 
 @Composable
 fun BottomCustomNavigation(navHostController: NavHostController, navDestination: NavDestination?) {
@@ -26,7 +27,8 @@ fun BottomCustomNavigation(navHostController: NavHostController, navDestination:
     )
 
 
-    BottomNavigation {
+    BottomNavigation(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer) {
+
         screens.forEach {
             AddItem(
                 navController = navHostController,
@@ -34,6 +36,7 @@ fun BottomCustomNavigation(navHostController: NavHostController, navDestination:
                 currentDestination = navDestination
             )
         }
+
     }
 
 }
@@ -68,6 +71,9 @@ fun RowScope.AddItem(
                 painter = painterResource(id = screen.icon),
                 contentDescription = "Icon Navigation"
             )
-        })
+        },
+        unselectedContentColor =  MaterialTheme.colorScheme.secondary.copy(0.3f),
+        selectedContentColor = MaterialTheme.colorScheme.secondary,
+        )
 
 }
