@@ -20,6 +20,7 @@ private val LightColorScheme = lightColorScheme(
     primary =  darkBrown,
     primaryContainer = ligthBrown ,
     secondary = white,
+    secondaryContainer = browExtraLigth,
     tertiary = beige,
     error = red,
     outline = gray,
