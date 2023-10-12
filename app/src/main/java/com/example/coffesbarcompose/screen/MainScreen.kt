@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.coffesbarcompose.route.BottomCustomNavigation
+import com.example.coffesbarcompose.route.BottomScreens
 import com.example.coffesbarcompose.route.NavGraphApp
 import com.example.coffesbarcompose.route.StackScreens
 
@@ -37,6 +38,7 @@ fun MainScreen() {
     val currentRoute =
         navBackStackEntry?.destination?.route?.split("/") //porque a rota tem argumento estou fazendo  o split nmo /
     val stringRoutesStack = StackScreens.values().map { it.toString() }
+    val stringBottomRoute = BottomScreens.screens().map { it.route }
 
     Scaffold(
         topBar = {
@@ -60,7 +62,7 @@ fun MainScreen() {
             )
         },
         bottomBar = {
-            BottomCustomNavigation(
+            if (stringBottomRoute.contains(currentRoute?.get(0))) BottomCustomNavigation(
                 navHostController = navController,
                 navDestination = currentDestination
             )

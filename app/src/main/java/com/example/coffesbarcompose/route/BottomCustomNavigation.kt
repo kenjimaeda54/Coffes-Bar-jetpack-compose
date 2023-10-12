@@ -20,15 +20,10 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun BottomCustomNavigation(navHostController: NavHostController, navDestination: NavDestination?) {
-    val screens = listOf(
-        BottomBarScreen.Home,
-        BottomBarScreen.Cart,
-        BottomBarScreen.Favorite
-    )
 
     BottomNavigation(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer) {
 
-        screens.forEach {
+        BottomScreens.screens().forEach {
             AddItem(
                 navController = navHostController,
                 screen = it,

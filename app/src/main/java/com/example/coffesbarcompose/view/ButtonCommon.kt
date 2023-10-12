@@ -22,9 +22,9 @@ import com.example.coffesbarcompose.ui.theme.fontsInter
 @Composable
 fun ButtonCommon() {
     Button(modifier = Modifier
-        .fillMaxWidth().height(29.dp),
+        .fillMaxWidth().height(31.dp),
         shape = RoundedCornerShape(7.dp),
-        contentPadding = PaddingValues(all = 1.dp),
+        contentPadding = PaddingValues(all = 3.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.tertiary
         ),
