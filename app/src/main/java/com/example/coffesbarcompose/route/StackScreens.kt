@@ -1,7 +1,5 @@
 package com.example.coffesbarcompose.route
 
-import java.lang.IllegalArgumentException
-
 enum class StackScreens {
     MainScreen,
     DetailsScreen,

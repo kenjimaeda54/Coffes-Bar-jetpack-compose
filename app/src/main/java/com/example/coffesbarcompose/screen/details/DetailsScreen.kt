@@ -1,6 +1,5 @@
 package com.example.coffesbarcompose.screen.details
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,7 +39,7 @@ import com.example.coffesbarcompose.view.ButtonCommon
 fun DetailsScreen(navController: NavController, coffeeId: String?) {
     val coffee by remember(coffeeId) {
         mutableStateOf<CoffeesModel?>(
-            coffeesMock.first { it.id == coffeeId }
+            coffeesMock.first { it._id == coffeeId }
         )
     }
     val heightImage = LocalConfiguration.current.screenHeightDp / 2

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.mocks.coffeesMock
 import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.ui.theme.fontsInter
@@ -69,28 +70,21 @@ fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel) {
                 color = MaterialTheme.colorScheme.secondary
 
             )
-            Surface(
-                modifier = Modifier.height(40.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(7.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(
-                        text = coffee.price,
-                        textAlign = TextAlign.Center,
-                        fontFamily = fontsInter,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.White)
-                    
-                    ButtonWithIcon(icon = Icons.Default.Add)
-                }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = coffee.price,
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontsInter,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White)
+
+                ButtonWithIcon(icon = painterResource(id = R.drawable.pluss))
             }
 
         }
