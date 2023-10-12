@@ -1,5 +1,6 @@
 package com.example.coffesbarcompose.screen.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,16 +29,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.coffesbarcompose.mocks.coffeesMock
+import com.example.coffesbarcompose.route.StackScreens
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.RowCoffee
 
 @Composable
-fun HomeScreen() {
-
-    
+fun HomeScreen(navController: NavController) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(modifier = Modifier.padding(all = 20.dp)) {
             Row(
@@ -54,7 +55,7 @@ fun HomeScreen() {
                             fontSize = 30.sp
                         )
                     ) {
-                        append("Coffes \n \n")
+                        append("Coffees \n \n")
                     }
                     withStyle(
                         style = SpanStyle(
@@ -73,12 +74,13 @@ fun HomeScreen() {
                         .size(60.dp),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data("https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar01.png?alt=media&token=4a3820fa-b757-4bcd-b148-1cd914956112")
-                        .build(), contentDescription = "Immage avatar user"
+                        .build(), contentDescription = " Image avatar user"
                 )
             }
             LazyVerticalGrid(columns = GridCells.FixedSize(145.dp), horizontalArrangement = Arrangement.SpaceBetween, contentPadding = PaddingValues(bottom = 100.dp)) {
                 items(coffeesMock) {
-                     RowCoffee(coffee = it)
+                     RowCoffee(modifier = Modifier.clickable { navController.navigate(StackScreens.DetailsScreen.name + "/${it.id}") },coffee = it)
+
                 }
             }
 

@@ -26,8 +26,6 @@ private val LightColorScheme = lightColorScheme(
     outline = gray,
     outlineVariant = grayDark,
     tertiaryContainer = brow,
-
-
 )
 
 @Composable

@@ -26,7 +26,6 @@ fun BottomCustomNavigation(navHostController: NavHostController, navDestination:
         BottomBarScreen.Favorite
     )
 
-
     BottomNavigation(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer) {
 
         screens.forEach {

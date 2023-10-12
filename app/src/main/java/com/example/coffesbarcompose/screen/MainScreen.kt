@@ -1,25 +1,31 @@
 package com.example.coffesbarcompose.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.coffesbarcompose.route.BottomBarScreen
 import com.example.coffesbarcompose.route.BottomCustomNavigation
-import com.example.coffesbarcompose.route.BottomNavGraph
+import com.example.coffesbarcompose.route.NavGraphApp
+import com.example.coffesbarcompose.route.StackScreens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,8 +34,38 @@ fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    Scaffold(bottomBar = { BottomCustomNavigation(navHostController = navController, navDestination = currentDestination) }) {
-      BottomNavGraph(navController = navController)
+    val currentRoute =
+        navBackStackEntry?.destination?.route?.split("/") //porque a rota tem argumento estou fazendo  o split nmo /
+    val stringRoutesStack = StackScreens.values().map { it.toString() }
+
+    Scaffold(
+        topBar = {
+            if (stringRoutesStack.contains(currentRoute?.get(0))) TopAppBar(
+                title = { Text("") },
+                navigationIcon = {
+                    Image(
+                        modifier = Modifier
+                            .size(15.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            },
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "image back",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
+                    )
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
+        },
+        bottomBar = {
+            BottomCustomNavigation(
+                navHostController = navController,
+                navDestination = currentDestination
+            )
+        }) {
+        NavGraphApp(navController = navController)
     }
 
 

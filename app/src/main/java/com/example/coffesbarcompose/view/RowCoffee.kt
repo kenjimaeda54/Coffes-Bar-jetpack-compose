@@ -33,10 +33,10 @@ import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun RowCoffee(coffee: CoffeesModel) {
+fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel) {
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .padding(all = 10.dp)
             .height(220.dp),
         color = MaterialTheme.colorScheme.secondaryContainer,
