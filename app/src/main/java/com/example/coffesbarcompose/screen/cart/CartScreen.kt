@@ -35,7 +35,6 @@ import kotlin.random.Random
 fun CartScreen() {
     val deliveryFee = Random.nextDouble(3.0, 6.0)
 
-
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(
             modifier = Modifier
