@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.sp
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun ButtonCommon() {
-    Button(modifier = Modifier
+fun ButtonCommon(modifier: Modifier = Modifier,title: String) {
+    Button(modifier = modifier
         .fillMaxWidth().height(31.dp),
         shape = RoundedCornerShape(7.dp),
         contentPadding = PaddingValues(all = 3.dp),
@@ -27,7 +27,7 @@ fun ButtonCommon() {
         ),
         onClick = { /*TODO*/ }) {
         Text(
-           text = "Comprar",
+           text = title,
             style = TextStyle(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
                 fontFamily = fontsInter,
@@ -38,8 +38,3 @@ fun ButtonCommon() {
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun ButtonCommonPreview() {
-    ButtonCommon()
-}

@@ -1,13 +1,17 @@
 package com.example.coffesbarcompose.screen.cart
 
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,16 +24,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.coffesbarcompose.mocks.ordersByUserMock
 import com.example.coffesbarcompose.ui.theme.fontsInter
+import com.example.coffesbarcompose.utils.Format
+import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.RowOrders
+import com.example.coffesbarcompose.view.RowTitleAndSubTitle
+import kotlin.random.Random
 
 
 @Composable
 fun CartScreen() {
+    val deliveryFee = Random.nextDouble(3.0, 6.0)
+
+
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(
             modifier = Modifier
-                .padding(all = 20.dp)
                 .fillMaxWidth()
+                .fillMaxSize(0.8f)
+                .padding(end = 20.dp, start = 20.dp, top = 20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -45,6 +57,19 @@ fun CartScreen() {
                 RowOrders(order = it)
                 Spacer(modifier = Modifier.padding(vertical = 10.dp))
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Divider(thickness = 0.2.dp, color = MaterialTheme.colorScheme.outline)
+            Spacer(modifier = Modifier.padding(vertical = 5.dp))
+            RowTitleAndSubTitle(
+                tile = "Taxa de entrega",
+                subTitle = "R$ ${Format.formatDoubleToMoneyReal(deliveryFee)}"
+            )
+            RowTitleAndSubTitle(tile = "Valor", subTitle = "R$ 35,00")
+            Spacer(modifier = Modifier.padding(vertical = 5.dp))
+            Divider(thickness = 0.2.dp, color = MaterialTheme.colorScheme.outline)
+            Spacer(modifier = Modifier.padding(vertical = 5.dp))
+            RowTitleAndSubTitle(tile = "Total", subTitle = "$ 35,00")
+            ButtonCommon(modifier = Modifier.padding(bottom = 65.dp, top = 10.dp), title = "Finalizar a compra")
         }
 
     }
