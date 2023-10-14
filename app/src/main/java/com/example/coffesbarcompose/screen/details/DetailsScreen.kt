@@ -104,7 +104,7 @@ fun DetailsScreen(navController: NavController, coffeeId: String?) {
                         )
                     )
                 }
-                ButtonCommon(title = "Comprar")
+                ButtonCommon(title = "Comprar", action = {})
             }
 
         }

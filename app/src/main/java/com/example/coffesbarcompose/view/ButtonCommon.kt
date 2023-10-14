@@ -17,15 +17,15 @@ import androidx.compose.ui.unit.sp
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun ButtonCommon(modifier: Modifier = Modifier,title: String) {
+fun ButtonCommon(modifier: Modifier = Modifier,title: String,action: () -> Unit) {
     Button(modifier = modifier
-        .fillMaxWidth().height(31.dp),
+        .fillMaxWidth().height(33.dp),
         shape = RoundedCornerShape(7.dp),
-        contentPadding = PaddingValues(all = 3.dp),
+        contentPadding = PaddingValues(all = 5.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.tertiary
         ),
-        onClick = { /*TODO*/ }) {
+        onClick = { action.invoke() }) {
         Text(
            text = title,
             style = TextStyle(

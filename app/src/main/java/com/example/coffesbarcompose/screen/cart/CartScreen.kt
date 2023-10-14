@@ -16,13 +16,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.coffesbarcompose.mocks.ordersByUserMock
+import com.example.coffesbarcompose.route.StackScreens
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.utils.Format
 import com.example.coffesbarcompose.view.ButtonCommon
@@ -32,15 +37,17 @@ import kotlin.random.Random
 
 
 @Composable
-fun CartScreen() {
-    val deliveryFee = Random.nextDouble(3.0, 6.0)
+fun CartScreen(navController: NavController) {
+    val deliveryFee by remember {
+        mutableDoubleStateOf(Random.nextDouble(3.0, 6.0))
+    }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxSize(0.8f)
-                .padding(end = 20.dp, start = 20.dp, top = 20.dp)
+                .padding(all = 20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -68,7 +75,10 @@ fun CartScreen() {
             Divider(thickness = 0.2.dp, color = MaterialTheme.colorScheme.outline)
             Spacer(modifier = Modifier.padding(vertical = 5.dp))
             RowTitleAndSubTitle(tile = "Total", subTitle = "$ 35,00")
-            ButtonCommon(modifier = Modifier.padding(bottom = 65.dp, top = 10.dp), title = "Finalizar a compra")
+            ButtonCommon(
+                modifier = Modifier.padding(bottom = 55.dp, top = 10.dp),
+                title = "Finalizar a compra",
+                action = { navController.navigate(StackScreens.PaymentResume.name) })
         }
 
     }

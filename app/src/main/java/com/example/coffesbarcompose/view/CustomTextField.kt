@@ -17,11 +17,3 @@ fun CustomTextField(text: TextFieldValue,action: (TextFieldValue) -> Unit, place
 }
 
 
-@Composable
-@Preview
-fun CustomTextFieldPreview() {
-    val text by rememberSaveable {
-        mutableStateOf(TextFieldValue(""))
-    }
-    CustomTextField(text = text, action = {}, placeholder = {Text("Insira algo")})
-}

@@ -16,21 +16,21 @@ import androidx.compose.ui.unit.sp
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun ButtonWithChildren(action: () -> Unit, text: String) {
-    Column(modifier = Modifier.clickable { action.invoke() }) {
+fun ButtonCustomOutline(modifier: Modifier = Modifier, action: () -> Unit, text: String) {
+    Column(modifier = modifier.clickable { action.invoke() }) {
         Text(
             text, style = TextStyle(
                 fontFamily = fontsInter,
                 fontSize = 17.sp,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.outline.copy(0.5f),
             ), modifier = Modifier.padding(bottom = 5.dp)
         )
-        Divider(modifier = Modifier.height(0.9.dp), color = MaterialTheme.colorScheme.outline)
+        Divider(modifier = Modifier.height(0.5.dp), color = MaterialTheme.colorScheme.outline.copy(0.5f))
     }
 }
 
 @Composable
 @Preview
 fun ButtonWithChildrenPreview() {
-    ButtonWithChildren(action = {}, text = "Clica aqui")
+    ButtonCustomOutline(action = {}, text = "Clica aqui")
 }
