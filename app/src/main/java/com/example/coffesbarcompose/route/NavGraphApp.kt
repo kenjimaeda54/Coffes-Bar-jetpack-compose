@@ -7,10 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.coffesbarcompose.screen.cart.CartScreen
-import com.example.coffesbarcompose.screen.confirm_payment.PaymentResume
+import com.example.coffesbarcompose.screen.payment_resume.PaymentResume
 import com.example.coffesbarcompose.screen.details.DetailsScreen
 import com.example.coffesbarcompose.screen.favorite.FavoriteScreen
 import com.example.coffesbarcompose.screen.home.HomeScreen
+import com.example.coffesbarcompose.screen.payment_finished.PaymentFinished
 
 @Composable
 fun NavGraphApp(navController: NavHostController) {
@@ -38,7 +39,11 @@ fun NavGraphApp(navController: NavHostController) {
             )
         }
         composable(route = StackScreens.PaymentResume.name) {
-            PaymentResume()
+            PaymentResume(navController)
+        }
+
+        composable(route = StackScreens.PaymentFinished.name) {
+            PaymentFinished(navController)
         }
     }
 }
