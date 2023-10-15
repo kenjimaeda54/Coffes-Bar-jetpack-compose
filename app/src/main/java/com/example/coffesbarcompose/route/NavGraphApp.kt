@@ -1,6 +1,7 @@
 package com.example.coffesbarcompose.route
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,8 +11,10 @@ import com.example.coffesbarcompose.screen.cart.CartScreen
 import com.example.coffesbarcompose.screen.payment_resume.PaymentResume
 import com.example.coffesbarcompose.screen.details.DetailsScreen
 import com.example.coffesbarcompose.screen.favorite.FavoriteScreen
+import com.example.coffesbarcompose.screen.home.HomeFragment
 import com.example.coffesbarcompose.screen.home.HomeScreen
 import com.example.coffesbarcompose.screen.payment_finished.PaymentFinished
+import com.example.coffesbarcompose.view_models.CoffeesViewModel
 
 @Composable
 fun NavGraphApp(navController: NavHostController) {

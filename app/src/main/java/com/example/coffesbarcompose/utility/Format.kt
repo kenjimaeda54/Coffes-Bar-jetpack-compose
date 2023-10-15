@@ -1,4 +1,4 @@
-package com.example.coffesbarcompose.utils
+package com.example.coffesbarcompose.utility
 
 class Format {
     companion object  {

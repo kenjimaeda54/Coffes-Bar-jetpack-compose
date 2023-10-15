@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import com.example.coffesbarcompose.mocks.ordersByUserMock
 import com.example.coffesbarcompose.route.StackScreens
 import com.example.coffesbarcompose.ui.theme.fontsInter
-import com.example.coffesbarcompose.utils.Format
+import com.example.coffesbarcompose.utility.Format
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.RowOrders
 import com.example.coffesbarcompose.view.RowTitleAndSubTitle
