@@ -53,12 +53,15 @@ android {
 
 dependencies {
 
+    // Location
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 
     // Navigation Compose
-    implementation("androidx.navigation:navigation-compose:2.7.3")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
 
     //BottomNavigation
-    implementation("androidx.compose.material:material:1.5.2")
+    implementation("androidx.compose.material:material:1.5.3")
 
     //coil
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -78,6 +81,7 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.44")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
 
