@@ -28,11 +28,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.route.StackScreens
-import com.example.coffesbarcompose.utils.Format
+import com.example.coffesbarcompose.utility.Format
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
 import com.example.coffesbarcompose.view.RowTitleAndSubTitle
 import kotlin.random.Random
+
+
+
+//https://github.com/velmurugan-murugesan/JetpackCompose/blob/master/ObserveCurrentLocationJetpackCompose/app/src/main/java/com/example/observecurrentlocationjetpackcompose/MainActivity.kt
 
 @Composable
 fun PaymentResume(navController: NavHostController) {

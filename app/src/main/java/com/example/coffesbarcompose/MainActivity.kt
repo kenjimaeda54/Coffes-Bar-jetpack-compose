@@ -5,9 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.coffesbarcompose.screen.MainScreen
 import com.example.coffesbarcompose.ui.theme.CoffesBarComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

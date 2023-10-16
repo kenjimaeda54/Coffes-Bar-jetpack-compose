@@ -14,7 +14,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.coffesbarcompose.ui.theme.fontsInter
-import com.example.coffesbarcompose.utils.Format
 
 @Composable
 fun RowTitleAndSubTitle(modifier: Modifier = Modifier, tile: String, subTitle: String) {
