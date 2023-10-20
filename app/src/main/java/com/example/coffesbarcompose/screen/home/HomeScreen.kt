@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -59,7 +60,7 @@ fun HomeScreen(
     cartViewModel: CartViewModel = viewModel()
 ) {
 
-
+    val rowWidth = LocalConfiguration.current.screenWidthDp * 0.42
     ComposableLifecycle { _, event ->
         if (event == Lifecycle.Event.ON_CREATE) {
             coffeesViewModel.getAllCoffees()
@@ -120,7 +121,7 @@ fun HomeScreen(
                     )
                 }
                 LazyVerticalGrid(
-                    columns = GridCells.FixedSize(145.dp),
+                    columns = GridCells.FixedSize(rowWidth.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     contentPadding = PaddingValues(bottom = 100.dp)
                 ) {

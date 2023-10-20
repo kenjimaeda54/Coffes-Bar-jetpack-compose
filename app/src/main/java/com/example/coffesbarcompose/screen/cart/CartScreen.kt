@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -34,7 +35,9 @@ import kotlin.random.Random
 
 @Composable
 fun CartScreen(navController: NavController) {
-    val deliveryFee = Random.nextDouble(3.0, 6.0)
+    val deliveryFee by rememberSaveable {
+        mutableDoubleStateOf(Random.nextDouble(3.0, 6.0))
+    }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(
@@ -62,7 +65,7 @@ fun CartScreen(navController: NavController) {
             Spacer(modifier = Modifier.padding(vertical = 5.dp))
             RowTitleAndSubTitle(
                 tile = "Taxa de entrega",
-                subTitle = "formatDeliveryFree"
+                subTitle = Format.formatDoubleToMoneyReal(deliveryFee)
             )
             RowTitleAndSubTitle(tile = "Valor", subTitle = "R$ 35,00")
             Spacer(modifier = Modifier.padding(vertical = 5.dp))

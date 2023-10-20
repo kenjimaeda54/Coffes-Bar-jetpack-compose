@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -34,13 +37,17 @@ import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel,children: @Composable () -> Unit,isAdded: Boolean) {
-
+fun RowCoffee(
+    modifier: Modifier = Modifier,
+    coffee: CoffeesModel,
+    children: @Composable () -> Unit,
+    isAdded: Boolean
+) {
     Surface(
         modifier = modifier
             .padding(all = 10.dp)
             .height(220.dp),
-        color = if(isAdded) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondaryContainer,
+        color = if (isAdded) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondaryContainer,
         shape = RoundedCornerShape(5.dp)
     ) {
         Column(modifier = Modifier.padding(all = 5.dp)) {
@@ -75,16 +82,17 @@ fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel,children: @Comp
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Text(
                     text = coffee.price,
                     textAlign = TextAlign.Center,
                     fontFamily = fontsInter,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = Color.White)
+                    color = Color.White
+                )
 
-              children()
+                children()
             }
 
         }
