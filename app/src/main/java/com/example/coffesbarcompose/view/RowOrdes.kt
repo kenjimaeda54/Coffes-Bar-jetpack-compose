@@ -14,11 +14,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -100,8 +102,14 @@ fun RowOrders(order: Orders) {
                 ButtonWithIcon(
                     modifier = Modifier
                         .width(25.dp)
-                        .height(25.dp), icon = painterResource(id = R.drawable.pluss),
-                    sizeIcon = 15
+                        .height(25.dp),
+                    icon = painterResource(id = R.drawable.pluss),
+                    sizeIcon = 15,
+                    action = {},
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary
+                    ),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                 )
                 Text(
                     text = "1",
@@ -115,8 +123,14 @@ fun RowOrders(order: Orders) {
                 ButtonWithIcon(
                     modifier = Modifier
                         .width(25.dp)
-                        .height(25.dp), icon = painterResource(id = R.drawable.minus),
-                    sizeIcon = 15
+                        .height(25.dp),
+                    icon = painterResource(id = R.drawable.minus),
+                    sizeIcon = 15,
+                    action = {},
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary
+                    ),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                 )
             }
 

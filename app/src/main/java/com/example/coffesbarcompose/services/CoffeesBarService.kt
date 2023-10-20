@@ -7,4 +7,6 @@ import retrofit2.http.GET
 interface CoffeesBarService {
     @GET("/coffees")
     suspend fun getAllCoffees(): List<CoffeesModel>
+
+
 }

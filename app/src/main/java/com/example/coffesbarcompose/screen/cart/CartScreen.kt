@@ -34,9 +34,7 @@ import kotlin.random.Random
 
 @Composable
 fun CartScreen(navController: NavController) {
-    val deliveryFee by remember {
-        mutableDoubleStateOf(Random.nextDouble(3.0, 6.0))
-    }
+    val deliveryFee = Random.nextDouble(3.0, 6.0)
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(
@@ -64,7 +62,7 @@ fun CartScreen(navController: NavController) {
             Spacer(modifier = Modifier.padding(vertical = 5.dp))
             RowTitleAndSubTitle(
                 tile = "Taxa de entrega",
-                subTitle = "R$ ${Format.formatDoubleToMoneyReal(deliveryFee)}"
+                subTitle = "formatDeliveryFree"
             )
             RowTitleAndSubTitle(tile = "Valor", subTitle = "R$ 35,00")
             Spacer(modifier = Modifier.padding(vertical = 5.dp))

@@ -34,13 +34,13 @@ import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel) {
+fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel,children: @Composable () -> Unit,isAdded: Boolean) {
 
     Surface(
         modifier = modifier
             .padding(all = 10.dp)
             .height(220.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer,
+        color = if(isAdded) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondaryContainer,
         shape = RoundedCornerShape(5.dp)
     ) {
         Column(modifier = Modifier.padding(all = 5.dp)) {
@@ -84,17 +84,11 @@ fun RowCoffee(modifier: Modifier = Modifier,coffee: CoffeesModel) {
                     fontWeight = FontWeight.Normal,
                     color = Color.White)
 
-                ButtonWithIcon(icon = painterResource(id = R.drawable.pluss))
+              children()
             }
 
         }
     }
 
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RowCoffePreview() {
-    RowCoffee(coffee = coffeesMock[0])
 }

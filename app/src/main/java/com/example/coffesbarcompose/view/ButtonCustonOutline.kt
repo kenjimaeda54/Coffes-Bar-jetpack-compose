@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,13 +20,20 @@ import com.example.coffesbarcompose.ui.theme.fontsInter
 fun ButtonCustomOutline(modifier: Modifier = Modifier, action: () -> Unit, text: String) {
     Column(modifier = modifier.clickable { action.invoke() }) {
         Text(
-            text, style = TextStyle(
+            text,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = TextStyle(
                 fontFamily = fontsInter,
                 fontSize = 17.sp,
                 color = MaterialTheme.colorScheme.outline.copy(0.5f),
+
             ), modifier = Modifier.padding(bottom = 5.dp)
         )
-        Divider(modifier = Modifier.height(0.5.dp), color = MaterialTheme.colorScheme.outline.copy(0.5f))
+        Divider(
+            modifier = Modifier.height(0.5.dp),
+            color = MaterialTheme.colorScheme.outline.copy(0.5f)
+        )
     }
 }
 
