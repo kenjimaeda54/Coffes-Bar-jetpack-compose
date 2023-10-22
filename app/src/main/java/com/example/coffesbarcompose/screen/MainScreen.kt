@@ -42,7 +42,7 @@ fun MainScreen() {
 
     Scaffold(
         topBar = {
-            if (stringRoutesStack.contains(currentRoute?.get(0))) TopAppBar(
+            if (stringRoutesStack.contains(currentRoute?.get(0)) && currentRoute?.get(0) != StackScreens.PaymentFinished.name) TopAppBar(
                 title = { Text("") },
                 navigationIcon = {
                     Image(

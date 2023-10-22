@@ -52,11 +52,11 @@ class UserViewModel @Inject constructor(private val geoCodingRepository: GeoCodi
             //https://stackoverflow.com/questions/45012289/java-io-ioexception-grpc-failed
 
             fusedLocationClient!!.lastLocation.addOnSuccessListener {
-                Log.d("entrou", "entrou")
+
 
                 viewModelScope.launch {
                     data.value.isLoading = true
-                    completion(geoCodingRepository.getAddress(location = "-22.2335189965,-45.946475046"))
+                    completion(geoCodingRepository.getAddress(location = "${it.latitude},${it.longitude}"))
                     if (data.value.toString().isNotEmpty()) {
                         data.value.isLoading = false
                     }
