@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coffesbarcompose.mocks.ordersByUserMock
-import com.example.coffesbarcompose.route.StackScreens
+import com.example.coffesbarcompose.route.StackScreensApp
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.utility.Format
 import com.example.coffesbarcompose.view.ButtonCommon
@@ -75,7 +74,7 @@ fun CartScreen(navController: NavController) {
             ButtonCommon(
                 modifier = Modifier.padding(bottom = 55.dp, top = 10.dp),
                 title = "Finalizar a compra",
-                action = { navController.navigate(StackScreens.PaymentResume.name) })
+                action = { navController.navigate(StackScreensApp.PaymentResume.name) })
         }
 
     }

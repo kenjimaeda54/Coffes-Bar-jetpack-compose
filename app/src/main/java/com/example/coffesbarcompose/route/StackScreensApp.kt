@@ -1,17 +1,15 @@
 package com.example.coffesbarcompose.route
 
-enum class StackScreens {
-    MainScreen,
+enum class StackScreensApp {
     DetailsScreen,
     PaymentResume,
     PaymentFinished;
 
     companion object {
-        fun fromRoute(route: String?): StackScreens = when(route?.substringBefore("/")) {
+        fun fromRoute(route: String?): StackScreensApp = when(route?.substringBefore("/")) {
             DetailsScreen.name -> DetailsScreen
             PaymentResume.name-> PaymentResume
             PaymentFinished.name -> PaymentFinished
-            MainScreen.name -> MainScreen
             else -> throw  IllegalArgumentException("Route $route is not recognizable")
         }
     }

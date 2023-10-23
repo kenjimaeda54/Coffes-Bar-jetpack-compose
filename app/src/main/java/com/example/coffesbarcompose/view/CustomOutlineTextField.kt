@@ -21,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,10 +34,11 @@ import com.example.coffesbarcompose.ui.theme.fontsInter
 )
 @Composable
 fun CustomOutlineTextField(
-    placeHolder: @Composable() (() -> Unit),
+    placeHolder: String,
     value: String,
     onValueChange: (text: String) -> Unit,
-    actionKeyboard: (() -> Unit)? = null
+    actionKeyboard: (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val enabled = true
@@ -47,6 +49,7 @@ fun CustomOutlineTextField(
         value = value,
         onValueChange = onValueChange,
         interactionSource = interactionSource,
+        visualTransformation = visualTransformation,
         enabled = enabled,
         textStyle = TextStyle(
             fontFamily = fontsInter,
@@ -71,7 +74,15 @@ fun CustomOutlineTextField(
             value = value,
             visualTransformation = VisualTransformation.None,
             innerTextField = it,
-            placeholder = placeHolder,
+            placeholder = {
+                Text(
+                    text = placeHolder, style = TextStyle(
+                        fontSize = 17.sp,
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
+
+                        )
+                )
+            },
             singleLine = false,
             enabled = enabled,
             interactionSource = interactionSource,

@@ -39,11 +39,11 @@ import com.example.coffesbarcompose.models.Orders
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun RowOrders(order: Orders) {
+fun RowOrders(modifier: Modifier = Modifier,order: Orders) {
     val widthBody = LocalConfiguration.current.screenWidthDp * 0.3
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(75.dp),
         color = MaterialTheme.colorScheme.secondaryContainer,

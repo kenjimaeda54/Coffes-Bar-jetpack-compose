@@ -48,7 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.models.AddressUserModel
-import com.example.coffesbarcompose.route.StackScreens
+import com.example.coffesbarcompose.route.StackScreensApp
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
 import com.example.coffesbarcompose.view.CustomOutlineTextField
@@ -100,6 +100,11 @@ fun PaymentResume(
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
 
+    //quando usuario cliar no botao de voltar
+    BackHandler(modalSheetState.isVisible) {
+        coroutineScope.launch { modalSheetState.hide() }
+    }
+
 
     val launcherMultiplePermissions =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { it ->
@@ -137,10 +142,6 @@ fun PaymentResume(
 
     }
 
-    //quando usuario cliar no botao de voltar
-    BackHandler(modalSheetState.isVisible) {
-        coroutineScope.launch { modalSheetState.hide() }
-    }
 
     fun handleSheetAddress(field: String) {
         coroutineScope.launch {
@@ -155,7 +156,7 @@ fun PaymentResume(
     }
 
     fun handleNavigate() {
-        navController.navigate(StackScreens.PaymentFinished.name)
+        navController.navigate(StackScreensApp.PaymentFinished.name)
     }
 
 
@@ -173,16 +174,7 @@ fun PaymentResume(
             ) {
                 when (currentField) {
                     "street" -> CustomOutlineTextField(
-                        placeHolder = {
-                            Text(
-                                text = address.street, style = TextStyle(
-                                    fontSize = 17.sp,
-                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
-
-                                    )
-                            )
-
-                        },
+                        placeHolder = address.street,
                         value = addressStreet,
                         onValueChange = { text -> addressStreet = text },
                         actionKeyboard = {
@@ -192,15 +184,7 @@ fun PaymentResume(
                         })
 
                     "streetNumber" -> CustomOutlineTextField(
-                        placeHolder = {
-                            Text(
-                                text = address.streetNumber, style = TextStyle(
-                                    fontSize = 17.sp,
-                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
-
-                                    )
-                            )
-                        },
+                        placeHolder = address.streetNumber,
                         value = addressStreetNumber,
                         onValueChange = { text -> addressStreetNumber = text }, actionKeyboard = {
                             coroutineScope.launch {
@@ -209,15 +193,7 @@ fun PaymentResume(
                         })
 
                     "neighBoard" -> CustomOutlineTextField(
-                        placeHolder = {
-                            Text(
-                                text = address.neighBoard, style = TextStyle(
-                                    fontSize = 17.sp,
-                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
-
-                                    )
-                            )
-                        },
+                        placeHolder = address.neighBoard,
                         value = addressNeighborhood,
                         onValueChange = { text -> addressNeighborhood = text }, actionKeyboard = {
                             coroutineScope.launch {
@@ -226,15 +202,7 @@ fun PaymentResume(
                         })
 
                     else -> CustomOutlineTextField(
-                        placeHolder = {
-                            Text(
-                                text = address.city, style = TextStyle(
-                                    fontSize = 17.sp,
-                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
-
-                                    )
-                            )
-                        },
+                        placeHolder = address.city,
                         value = addressCity,
                         onValueChange = { text -> addressCity = text },
                         actionKeyboard = {
