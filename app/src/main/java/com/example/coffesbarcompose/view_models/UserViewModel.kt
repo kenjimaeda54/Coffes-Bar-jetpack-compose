@@ -4,21 +4,17 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Geocoder
-import android.os.Build
-import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.coffesbarcompose.data.DataOrException
-import com.example.coffesbarcompose.models.AddressUserModel
 import com.example.coffesbarcompose.models.GeoCodingModel
+import com.example.coffesbarcompose.models.UserModel
+import com.example.coffesbarcompose.repository.CoffeesBarRepository
 import com.example.coffesbarcompose.repository.GeoCodingRepository
+import com.example.coffesbarcompose.services.CoffeesBarServiceApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,16 +25,23 @@ import javax.inject.Inject
 //https://github.com/velmurugan-murugesan/JetpackCompose/blob/master/ObserveCurrentLocationJetpackCompose/app/src/main/java/com/example/observecurrentlocationjetpackcompose/MainActivity.kt
 @HiltViewModel
 
-class UserViewModel @Inject constructor(private val geoCodingRepository: GeoCodingRepository) :
+class UserViewModel @Inject constructor(
+    private val geoCodingRepository: GeoCodingRepository,
+    private val coffeesBarRepository: CoffeesBarRepository
+) :
     ViewModel() {
-    var data: MutableState<DataOrException<GeoCodingModel, Boolean, Exception>> =
+    private var dataAddressUser: MutableState<DataOrException<GeoCodingModel, Boolean, Exception>> =
         mutableStateOf(
             DataOrException(null, true, Exception(""))
         )
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
 
-    fun getLocation(activity: Activity, context: Context,completion: ( DataOrException<GeoCodingModel, Boolean, Exception>) -> Unit) {
+    fun getLocation(
+        activity: Activity,
+        context: Context,
+        completion: (DataOrException<GeoCodingModel, Boolean, Exception>) -> Unit
+    ) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -55,10 +58,10 @@ class UserViewModel @Inject constructor(private val geoCodingRepository: GeoCodi
 
 
                 viewModelScope.launch {
-                    data.value.isLoading = true
+                    dataAddressUser.value.isLoading = true
                     completion(geoCodingRepository.getAddress(location = "${it.latitude},${it.longitude}"))
-                    if (data.value.toString().isNotEmpty()) {
-                        data.value.isLoading = false
+                    if (dataAddressUser.value.toString().isNotEmpty()) {
+                        dataAddressUser.value.isLoading = false
                     }
                 }
 
@@ -87,11 +90,21 @@ class UserViewModel @Inject constructor(private val geoCodingRepository: GeoCodi
 
 
             }
-            return
         }
-
 
     }
 
+
+    fun createUser(user: UserModel, completion: (user: UserModel) -> Unit) {
+        viewModelScope.launch {
+            val response = coffeesBarRepository.createUser(user)
+
+            if (response.data != null) {
+                completion(response.data)
+            }
+
+
+        }
+    }
 
 }

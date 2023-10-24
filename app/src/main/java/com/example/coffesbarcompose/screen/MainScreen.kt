@@ -40,7 +40,7 @@ fun MainScreen() {
     val stringRoutesStack = StackScreensApp.values().map { it.toString() }
     val stringBottomRoute = BottomScreens.screens().map { it.route }
     val userLogged  by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
 

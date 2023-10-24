@@ -1,6 +1,7 @@
 package com.example.coffesbarcompose.di
 
-import com.example.coffesbarcompose.services.CoffeesBarService
+
+import com.example.coffesbarcompose.services.CoffeesBarServiceApi
 import com.example.coffesbarcompose.services.GeoCodingService
 import com.example.coffesbarcompose.utility.Constants
 import dagger.Module
@@ -17,9 +18,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun coffeesBarService(): CoffeesBarService = Retrofit.Builder().baseUrl(Constants.baseURL)
+    fun coffeesBarService(): CoffeesBarServiceApi = Retrofit.Builder().baseUrl(Constants.baseURL)
         .addConverterFactory(GsonConverterFactory.create()).build()
-        .create(CoffeesBarService::class.java)
+        .create(CoffeesBarServiceApi::class.java)
 
 
     @Provides

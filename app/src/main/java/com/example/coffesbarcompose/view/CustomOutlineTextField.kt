@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.coffesbarcompose.ui.theme.fontsInter
+import kotlin.math.sin
 
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
@@ -38,7 +39,9 @@ fun CustomOutlineTextField(
     value: String,
     onValueChange: (text: String) -> Unit,
     actionKeyboard: (() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    leadingIcon:  @Composable() (() -> Unit)? = null,
+    singleLine: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val enabled = true
@@ -74,6 +77,7 @@ fun CustomOutlineTextField(
             value = value,
             visualTransformation = VisualTransformation.None,
             innerTextField = it,
+            leadingIcon = leadingIcon,
             placeholder = {
                 Text(
                     text = placeHolder, style = TextStyle(
@@ -83,7 +87,7 @@ fun CustomOutlineTextField(
                         )
                 )
             },
-            singleLine = false,
+            singleLine = singleLine,
             enabled = enabled,
             interactionSource = interactionSource,
             // keep vertical paddings but change the horizontal

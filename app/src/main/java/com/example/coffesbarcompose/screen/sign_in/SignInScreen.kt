@@ -1,6 +1,7 @@
 package com.example.coffesbarcompose.screen.sign_in
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,21 +31,30 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.mocks.mockAvatar
+import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
+import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
 import com.example.coffesbarcompose.view.CustomOutlineTextField
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -80,6 +90,43 @@ fun SignIn() {
         mutableStateOf(false)
     }
 
+    var visualTransformation by remember {
+        mutableStateOf<VisualTransformation>(PasswordVisualTransformation())
+    }
+
+    val isValidEmail by remember(email) {
+        mutableStateOf(
+            if (email.isEmpty()) {
+                false
+            } else {
+                android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+            }
+        )
+
+    }
+
+    val isValidPassword by remember(password) {
+        mutableStateOf(
+            if (password.isEmpty()) {
+                false
+            } else {
+                val passwordREGEX = Pattern.compile(
+                    "^" +
+                            "(?=.*[0-9])" +         //at least 1 digit
+                            "(?=.*[a-z])" +         //at least 1 lower case letter
+                            "(?=.*[A-Z])" +         //at least 1 upper case letter
+                            "(?=.*[a-zA-Z])" +      //any letter
+                            "(?=.*[@#$%^&+=])" +    //at least 1 special character
+                            "(?=\\S+$)" +           //no white spaces
+                            ".{8,}" +               //at least 8 characters
+                            "$"
+                );
+                passwordREGEX.matcher(password).matches()
+            }
+        )
+    }
+
+
     fun handleCurrentTextField(field: String) {
         currentTextField = field
         isModalAvatar = false
@@ -95,6 +142,21 @@ fun SignIn() {
         }
     }
 
+    fun handleActionKeyBoard() {
+        coroutineScope.launch {
+            sheetValue.hide()
+        }
+    }
+
+    fun handleVisualTransformation() {
+        visualTransformation = if (visualTransformation == PasswordVisualTransformation()) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        }
+
+    }
+
     ModalBottomSheetLayout(
         sheetState = sheetValue,
         sheetShape = RoundedCornerShape(12.dp),
@@ -104,7 +166,7 @@ fun SignIn() {
                 LazyVerticalGrid(
                     columns = GridCells.FixedSize(width.dp),
                     contentPadding = PaddingValues(
-                       all = 10.dp
+                        all = 10.dp
                     )
                 ) {
                     items(mockAvatar) {
@@ -128,13 +190,31 @@ fun SignIn() {
                         "email" -> CustomOutlineTextField(
                             placeHolder = "Coloque seu email",
                             value = email,
-                            onValueChange = { text -> email = text })
+                            onValueChange = { text -> email = text },
+                            actionKeyboard = { handleActionKeyBoard() })
 
                         "password" -> CustomOutlineTextField(
                             placeHolder = "Coloque sua senha",
                             value = password,
                             onValueChange = { text -> password = text },
-                            visualTransformation = PasswordVisualTransformation()
+                            visualTransformation = visualTransformation,
+                            actionKeyboard = { handleActionKeyBoard() },
+                            singleLine = true,
+                            leadingIcon = {
+                                Image(
+                                    modifier = Modifier
+                                        .size(15.dp)
+                                        .clickable {
+                                            handleVisualTransformation()
+                                        },
+                                    painter = if (visualTransformation == PasswordVisualTransformation()) painterResource(
+                                        id = R.drawable.lock
+                                    ) else painterResource(id = R.drawable.padlock),
+                                    contentDescription = "Icon represented password",
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer)
+                                )
+                            }
                         )
                     }
                 }
@@ -180,7 +260,18 @@ fun SignIn() {
                 )
                 ButtonCustomOutline(
                     action = { handleCurrentTextField("email") },
-                    text = "Email"
+                    text = email.ifEmpty { "Email" }
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = if (!isValidEmail && email.isNotEmpty()) "Email precisa ser valido" else "",
+                    style = TextStyle(
+                        fontFamily = fontsInter,
+                        color =  MaterialTheme.colorScheme.error.copy(0.6f),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light
+                    ),
+                    textAlign = TextAlign.Left
                 )
                 Spacer(
                     modifier = Modifier.height(
@@ -189,7 +280,22 @@ fun SignIn() {
                 )
                 ButtonCustomOutline(
                     action = { handleCurrentTextField("password") },
-                    text = "Password"
+                    text = password.ifEmpty { "Password" }
+                )
+                Text(
+                    text = if (!isValidPassword && password.isNotEmpty()) "Senha precisa conter caracter maisculo, especial e digito"  else "",
+                    style = TextStyle(
+                        fontFamily = fontsInter,
+                        color = MaterialTheme.colorScheme.error.copy(0.6f),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light
+                    )
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                ButtonCommon(
+                    title = "Registrar",
+                    action = {},
+                    enable = isValidPassword && isValidEmail
                 )
             }
         }

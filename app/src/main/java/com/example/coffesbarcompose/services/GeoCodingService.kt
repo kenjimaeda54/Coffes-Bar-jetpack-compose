@@ -11,7 +11,6 @@ interface GeoCodingService {
         "X-RapidAPI-Host: trueway-geocoding.p.rapidapi.com"
     )
     @GET("/ReverseGeocode")
-
     suspend fun geoCoding(
         @Query("location") location: String,
         @Query("language") language: String = "pt-Br"

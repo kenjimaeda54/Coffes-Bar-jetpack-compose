@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.coffesbarcompose.data.DataOrException
 import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.repository.CoffeesBarRepository
-import com.example.coffesbarcompose.services.CoffeesBarService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
