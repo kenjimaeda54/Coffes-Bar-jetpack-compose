@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coffesbarcompose.data.DataOrException
+import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.GeoCodingModel
 import com.example.coffesbarcompose.models.UserModel
 import com.example.coffesbarcompose.repository.CoffeesBarRepository
@@ -24,7 +25,6 @@ import javax.inject.Inject
 //https://tomas-repcik.medium.com/locationrequest-create-got-deprecated-how-to-fix-it-e4f814138764
 //https://github.com/velmurugan-murugesan/JetpackCompose/blob/master/ObserveCurrentLocationJetpackCompose/app/src/main/java/com/example/observecurrentlocationjetpackcompose/MainActivity.kt
 @HiltViewModel
-
 class UserViewModel @Inject constructor(
     private val geoCodingRepository: GeoCodingRepository,
     private val coffeesBarRepository: CoffeesBarRepository
@@ -35,7 +35,14 @@ class UserViewModel @Inject constructor(
             DataOrException(null, true, Exception(""))
         )
     private var fusedLocationClient: FusedLocationProviderClient? = null
-
+    var dataAvatars: MutableState<DataOrException<List<AvatarModel>, Boolean, Exception>> =
+        mutableStateOf(
+            DataOrException(null, true, Exception(""))
+        )
+    var isAnonymous = mutableStateOf(true)
+    var dataUser: MutableState<DataOrException<UserModel, Boolean, Exception>> = mutableStateOf(
+        DataOrException(null, true, Exception(""))
+    )
 
     fun getLocation(
         activity: Activity,
@@ -95,14 +102,27 @@ class UserViewModel @Inject constructor(
     }
 
 
-    fun createUser(user: UserModel, completion: (user: UserModel) -> Unit) {
+    fun createUser(user: UserModel) {
         viewModelScope.launch {
             val response = coffeesBarRepository.createUser(user)
 
             if (response.data != null) {
-                completion(response.data)
+                isAnonymous.value = false
+                dataUser.value.data = response.data
             }
 
+        }
+    }
+
+    fun getAllAvatars() {
+        viewModelScope.launch {
+            dataAvatars.value.isLoading = true
+
+            dataAvatars.value = coffeesBarRepository.getAvatars()
+
+            if (dataAvatars.toString().isNotEmpty()) {
+                dataAvatars.value.isLoading = false
+            }
 
         }
     }

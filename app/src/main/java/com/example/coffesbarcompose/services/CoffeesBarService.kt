@@ -1,5 +1,6 @@
 package com.example.coffesbarcompose.services
 
+import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.models.UserModel
 import retrofit2.http.Body
@@ -15,5 +16,9 @@ interface CoffeesBarServiceApi {
     suspend fun createUser(
         @Body userModel: UserModel
     ): UserModel
+
+    @GET("/avatars")
+    suspend fun getAvatars(): List<AvatarModel>
+
 
 }

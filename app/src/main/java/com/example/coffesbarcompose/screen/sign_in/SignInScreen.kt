@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,21 +45,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.mocks.mockAvatar
+import com.example.coffesbarcompose.models.AvatarModel
+import com.example.coffesbarcompose.models.UserModel
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
+import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.CustomOutlineTextField
+import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SignIn() {
+fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
     val width = LocalConfiguration.current.screenWidthDp * 0.3
 
     val sheetValue = rememberModalBottomSheetState(
@@ -68,14 +75,6 @@ fun SignIn() {
     )
 
     val coroutineScope = rememberCoroutineScope()
-
-    BackHandler {
-        coroutineScope.launch {
-            if (sheetValue.isVisible) {
-                sheetValue.hide()
-            }
-        }
-    }
 
     var email by remember {
         mutableStateOf("")
@@ -105,6 +104,10 @@ fun SignIn() {
 
     }
 
+    var dataAvatar by remember {
+        mutableStateOf(AvatarModel(_id = "", urlAvatar = ""))
+    }
+
     val isValidPassword by remember(password) {
         mutableStateOf(
             if (password.isEmpty()) {
@@ -125,6 +128,22 @@ fun SignIn() {
             }
         )
     }
+
+    BackHandler {
+        coroutineScope.launch {
+            if (sheetValue.isVisible) {
+                sheetValue.hide()
+            }
+        }
+    }
+
+    ComposableLifecycle { _, event ->
+        if (event == Lifecycle.Event.ON_CREATE) {
+            usersViewModel.getAllAvatars()
+        }
+    }
+
+
 
 
     fun handleCurrentTextField(field: String) {
@@ -157,6 +176,19 @@ fun SignIn() {
 
     }
 
+    fun handleAvatarClicked(avatar: AvatarModel) {
+        dataAvatar = avatar
+        coroutineScope.launch {
+            sheetValue.hide()
+        }
+    }
+
+    fun handleRegisterUser() {
+        val user =
+            UserModel(name = "", email = email, password = password, avatarId = dataAvatar._id)
+        usersViewModel.createUser(user)
+    }
+
     ModalBottomSheetLayout(
         sheetState = sheetValue,
         sheetShape = RoundedCornerShape(12.dp),
@@ -169,12 +201,17 @@ fun SignIn() {
                         all = 10.dp
                     )
                 ) {
-                    items(mockAvatar) {
-                        AsyncImage(
-                            modifier = Modifier.size(50.dp),
-                            model = ImageRequest.Builder(LocalContext.current).data(it).build(),
-                            contentDescription = "avatar image"
-                        )
+                    if (usersViewModel.dataAvatars.value.data != null) {
+                        items(usersViewModel.dataAvatars.value.data!!) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clickable { handleAvatarClicked(it) },
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(it.urlAvatar).build(),
+                                contentDescription = "avatar image"
+                            )
+                        }
                     }
                 }
 
@@ -253,11 +290,12 @@ fun SignIn() {
                             handleSheetAvatar()
                         },
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data("https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar06.png?alt=media&token=0830f591-9855-4c85-8368-0b89c9af6182")
+                        .data(dataAvatar.urlAvatar.ifEmpty { "https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar06.png?alt=media&token=0830f591-9855-4c85-8368-0b89c9af6182" })
                         .build(),
                     contentDescription = "Image Avatar",
                     contentScale = ContentScale.Fit,
                 )
+                Spacer(modifier = Modifier.padding(vertical = 20.dp))
                 ButtonCustomOutline(
                     action = { handleCurrentTextField("email") },
                     text = email.ifEmpty { "Email" }
@@ -267,7 +305,7 @@ fun SignIn() {
                     text = if (!isValidEmail && email.isNotEmpty()) "Email precisa ser valido" else "",
                     style = TextStyle(
                         fontFamily = fontsInter,
-                        color =  MaterialTheme.colorScheme.error.copy(0.6f),
+                        color = MaterialTheme.colorScheme.error.copy(0.6f),
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Light
                     ),
@@ -283,7 +321,7 @@ fun SignIn() {
                     text = password.ifEmpty { "Password" }
                 )
                 Text(
-                    text = if (!isValidPassword && password.isNotEmpty()) "Senha precisa conter caracter maisculo, especial e digito"  else "",
+                    text = if (!isValidPassword && password.isNotEmpty()) "Senha precisa conter caracter maisculo, especial e digito" else "",
                     style = TextStyle(
                         fontFamily = fontsInter,
                         color = MaterialTheme.colorScheme.error.copy(0.6f),
@@ -294,7 +332,7 @@ fun SignIn() {
                 Spacer(modifier = Modifier.weight(1f))
                 ButtonCommon(
                     title = "Registrar",
-                    action = {},
+                    action = { handleRegisterUser() },
                     enable = isValidPassword && isValidEmail
                 )
             }

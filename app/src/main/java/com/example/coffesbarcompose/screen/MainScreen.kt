@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.coffesbarcompose.route.BottomCustomNavigation
@@ -27,11 +28,12 @@ import com.example.coffesbarcompose.route.BottomScreens
 import com.example.coffesbarcompose.route.NavGraphApp
 import com.example.coffesbarcompose.route.NavGraphInitial
 import com.example.coffesbarcompose.route.StackScreensApp
+import com.example.coffesbarcompose.view_models.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(userViewModel: UserViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -39,12 +41,10 @@ fun MainScreen() {
         navBackStackEntry?.destination?.route?.split("/") //porque a rota tem argumento estou fazendo  o split nmo /
     val stringRoutesStack = StackScreensApp.values().map { it.toString() }
     val stringBottomRoute = BottomScreens.screens().map { it.route }
-    val userLogged  by remember {
-        mutableStateOf(false)
-    }
 
 
-    if(userLogged){
+
+    if(!userViewModel.isAnonymous.value){
         Scaffold(
             topBar = {
                 if (stringRoutesStack.contains(currentRoute?.get(0)) && currentRoute?.get(0) != StackScreensApp.PaymentFinished.name) TopAppBar(
