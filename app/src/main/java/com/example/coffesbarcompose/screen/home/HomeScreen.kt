@@ -1,5 +1,6 @@
 package com.example.coffesbarcompose.screen.home
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,7 @@ import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.RowCoffee
 import com.example.coffesbarcompose.view_models.CartViewModel
 import com.example.coffesbarcompose.view_models.CoffeesViewModel
+import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
 
 
@@ -64,13 +66,15 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     navController: NavController,
     coffeesViewModel: CoffeesViewModel = hiltViewModel(),
-    cartViewModel: CartViewModel = viewModel()
+    cartViewModel: CartViewModel = viewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val rowWidth = LocalConfiguration.current.screenWidthDp * 0.42
     ComposableLifecycle { _, event ->
         if (event == Lifecycle.Event.ON_CREATE) {
             coffeesViewModel.getAllCoffees()
+            Log.d("user","${userViewModel.dataUser}")
         }
     }
 

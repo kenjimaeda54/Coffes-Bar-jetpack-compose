@@ -4,12 +4,14 @@ import java.lang.IllegalArgumentException
 
 enum class StackScreensInitial {
     Login,
-    SignIn;
+    SignIn,
+    MainScreen;
 
     companion object {
         fun fromRoute(route: String): StackScreensInitial = when (route.substringBefore("/")) {
             Login.name -> Login
             SignIn.name -> SignIn
+            MainScreen.name -> MainScreen
             else -> throw IllegalArgumentException("Route $route is not recognizable")
         }
     }

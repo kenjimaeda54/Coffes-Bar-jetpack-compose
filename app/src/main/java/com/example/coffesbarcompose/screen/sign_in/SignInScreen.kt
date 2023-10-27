@@ -24,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,17 +41,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.coffesbarcompose.R
-import com.example.coffesbarcompose.mocks.mockAvatar
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.UserModel
+import com.example.coffesbarcompose.route.StackScreensInitial
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.ButtonCommon
@@ -65,7 +64,7 @@ import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
+fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavController) {
     val width = LocalConfiguration.current.screenWidthDp * 0.3
 
     val sheetValue = rememberModalBottomSheetState(
@@ -75,6 +74,10 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
     )
 
     val coroutineScope = rememberCoroutineScope()
+
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
 
     var email by remember {
         mutableStateOf("")
@@ -105,7 +108,7 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
     }
 
     var dataAvatar by remember {
-        mutableStateOf(AvatarModel(_id = "", urlAvatar = ""))
+        mutableStateOf(AvatarModel(_id =  "64d189bba57ef7a8ec728dcf", urlAvatar = "https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar01.png?alt=media&token=4a3820fa-b757-4bcd-b148-1cd914956112"))
     }
 
     val isValidPassword by remember(password) {
@@ -144,7 +147,9 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
     }
 
 
-
+   val isLoading by remember(usersViewModel.dataUser.value.isLoading) {
+       mutableStateOf(usersViewModel.dataUser.value.isLoading)
+   }
 
     fun handleCurrentTextField(field: String) {
         currentTextField = field
@@ -183,10 +188,20 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
         }
     }
 
+    //debugar aparentemnte o create user esta sendo chamado duas vezes
     fun handleRegisterUser() {
         val user =
             UserModel(name = "", email = email, password = password, avatarId = dataAvatar._id)
-        usersViewModel.createUser(user)
+        usersViewModel.createUser(user) {
+            if(it.data != null) {
+                navController.navigate(StackScreensInitial.MainScreen.name)
+            }else {
+                errorMessage = "Este email ja foi registrado na base"
+            }
+        }
+
+
+
     }
 
     ModalBottomSheetLayout(
@@ -290,7 +305,7 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
                             handleSheetAvatar()
                         },
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(dataAvatar.urlAvatar.ifEmpty { "https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar06.png?alt=media&token=0830f591-9855-4c85-8368-0b89c9af6182" })
+                        .data(dataAvatar.urlAvatar)
                         .build(),
                     contentDescription = "Image Avatar",
                     contentScale = ContentScale.Fit,
@@ -302,7 +317,7 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = if (!isValidEmail && email.isNotEmpty()) "Email precisa ser valido" else "",
+                    text = if (!isValidEmail && email.isNotEmpty()) "Email precisa ser valido" else errorMessage.ifEmpty { "" },
                     style = TextStyle(
                         fontFamily = fontsInter,
                         color = MaterialTheme.colorScheme.error.copy(0.6f),
@@ -330,19 +345,18 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel()) {
                     )
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                ButtonCommon(
-                    title = "Registrar",
-                    action = { handleRegisterUser() },
-                    enable = isValidPassword && isValidEmail
-                )
+
+                isLoading?.let {
+                    ButtonCommon(
+                        title = "Registrar",
+                        action = { handleRegisterUser() },
+                        enable = isValidPassword && isValidEmail,
+                        feedbackLoading = it
+                    )
+                }
+
             }
         }
     }
 }
 
-
-@Composable
-@Preview
-fun SignInPreview() {
-    SignIn()
-}

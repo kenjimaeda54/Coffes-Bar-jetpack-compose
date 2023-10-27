@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.coffesbarcompose.data.DataOrException
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.GeoCodingModel
+import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
 import com.example.coffesbarcompose.repository.CoffeesBarRepository
 import com.example.coffesbarcompose.repository.GeoCodingRepository
@@ -22,6 +23,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+
+//compartilhar dados no kotlin
+//https://www.youtube.com/watch?v=h61Wqy3qcKg
+//https://github.com/philipplackner/SharingDataBetweenScreens
 //https://tomas-repcik.medium.com/locationrequest-create-got-deprecated-how-to-fix-it-e4f814138764
 //https://github.com/velmurugan-murugesan/JetpackCompose/blob/master/ObserveCurrentLocationJetpackCompose/app/src/main/java/com/example/observecurrentlocationjetpackcompose/MainActivity.kt
 @HiltViewModel
@@ -41,7 +47,7 @@ class UserViewModel @Inject constructor(
         )
     var isAnonymous = mutableStateOf(true)
     var dataUser: MutableState<DataOrException<UserModel, Boolean, Exception>> = mutableStateOf(
-        DataOrException(null, true, Exception(""))
+        DataOrException(null, false, Exception(""))
     )
 
     fun getLocation(
@@ -102,14 +108,35 @@ class UserViewModel @Inject constructor(
     }
 
 
-    fun createUser(user: UserModel) {
+    fun createUser(user: UserModel, completion: (data: DataOrException<UserModel?, Boolean, Exception>) -> Unit) {
         viewModelScope.launch {
+            dataUser.value.isLoading = true
             val response = coffeesBarRepository.createUser(user)
+            dataUser.value.isLoading = response.isLoading
+
+            if (response.data != null) {
+                isAnonymous.value = false
+                dataUser.value.data = response.data
+                completion(DataOrException(data = response.data))
+            }else {
+               completion(DataOrException(data = null))
+            }
+
+
+        }
+    }
+
+
+    fun loginUser(userLoginModel: UserLoginModel) {
+        viewModelScope.launch {
+            dataUser.value.isLoading = true
+            val response = coffeesBarRepository.loginUser(userLoginModel)
 
             if (response.data != null) {
                 isAnonymous.value = false
                 dataUser.value.data = response.data
             }
+            dataUser.value.isLoading = false
 
         }
     }

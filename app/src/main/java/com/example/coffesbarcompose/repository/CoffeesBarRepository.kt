@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.coffesbarcompose.data.DataOrException
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.CoffeesModel
+import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
 import com.example.coffesbarcompose.services.CoffeesBarServiceApi
 import javax.inject.Inject
@@ -25,6 +26,16 @@ class CoffeesBarRepository @Inject constructor(private val coffeesBarServiceApi:
             coffeesBarServiceApi.createUser(userModel)
         } catch (exception: Exception) {
             Log.d("Error", exception.toString())
+            return DataOrException(exception = exception, isLoading = false)
+        }
+        return DataOrException(data = data[0], isLoading = false)
+    }
+
+    suspend fun loginUser(userLoginModel: UserLoginModel): DataOrException<UserModel,Boolean,Exception> {
+        val data = try {
+            coffeesBarServiceApi.loginUser(userLoginModel)
+        } catch (exception: Exception) {
+            Log.d("Error", exception.toString())
             return DataOrException(exception = exception)
         }
         return DataOrException(data = data)
@@ -39,5 +50,6 @@ class CoffeesBarRepository @Inject constructor(private val coffeesBarServiceApi:
         }
         return DataOrException(data = data)
     }
+
 
 }

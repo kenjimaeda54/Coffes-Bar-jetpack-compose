@@ -1,6 +1,7 @@
 package com.example.coffesbarcompose.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
@@ -28,6 +29,7 @@ import com.example.coffesbarcompose.route.BottomScreens
 import com.example.coffesbarcompose.route.NavGraphApp
 import com.example.coffesbarcompose.route.NavGraphInitial
 import com.example.coffesbarcompose.route.StackScreensApp
+import com.example.coffesbarcompose.route.StackScreensInitial
 import com.example.coffesbarcompose.view_models.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -80,16 +82,18 @@ fun MainScreen(userViewModel: UserViewModel = hiltViewModel()) {
                 TopAppBar(
                     title = { Text("") },
                     navigationIcon = {
-                        Image(
-                            modifier = Modifier
-                                .size(15.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                },
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "image back",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                        )
+                        if (currentRoute != null) {
+                            if(currentRoute[0] != StackScreensInitial.Login.name)  Image(
+                                modifier = Modifier
+                                    .size(15.dp)
+                                    .clickable {
+                                        navController.popBackStack()
+                                    },
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "image back",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
+                            )
+                        }
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(
                         containerColor = Color.Transparent
