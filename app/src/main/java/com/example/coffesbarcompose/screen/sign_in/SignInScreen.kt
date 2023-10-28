@@ -58,13 +58,14 @@ import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
 import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.CustomOutlineTextField
+import com.example.coffesbarcompose.view_models.AvatarViewModel
 import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavController) {
+fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavController, avatarViewModel: AvatarViewModel = hiltViewModel()) {
     val width = LocalConfiguration.current.screenWidthDp * 0.3
 
     val sheetValue = rememberModalBottomSheetState(
@@ -142,7 +143,7 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
 
     ComposableLifecycle { _, event ->
         if (event == Lifecycle.Event.ON_CREATE) {
-            usersViewModel.getAllAvatars()
+            avatarViewModel.getAllAvatars()
         }
     }
 
@@ -182,13 +183,14 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
     }
 
     fun handleAvatarClicked(avatar: AvatarModel) {
-        dataAvatar = avatar
         coroutineScope.launch {
             sheetValue.hide()
         }
+        dataAvatar = avatar
+
     }
 
-    //debugar aparentemnte o create user esta sendo chamado duas vezes
+
     fun handleRegisterUser() {
         val user =
             UserModel(name = "", email = email, password = password, avatarId = dataAvatar._id)
@@ -216,8 +218,8 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
                         all = 10.dp
                     )
                 ) {
-                    if (usersViewModel.dataAvatars.value.data != null) {
-                        items(usersViewModel.dataAvatars.value.data!!) {
+                    if (avatarViewModel.dataAvatars.value.data != null) {
+                        items(avatarViewModel.dataAvatars.value.data!!) {
                             AsyncImage(
                                 modifier = Modifier
                                     .size(50.dp)

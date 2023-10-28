@@ -1,7 +1,7 @@
 package com.example.coffesbarcompose.screen.home
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,13 +20,16 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,14 +48,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.coffesbarcompose.R
-import com.example.coffesbarcompose.mocks.mockAvatar
+import com.example.coffesbarcompose.mocks.coffeesMock
+import com.example.coffesbarcompose.models.AvatarModel
+import com.example.coffesbarcompose.models.UpdateAvatarModel
 import com.example.coffesbarcompose.route.StackScreensApp
+import com.example.coffesbarcompose.route.StackScreensInitial
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
+import com.example.coffesbarcompose.view.AvatarPlaceHolder
 import com.example.coffesbarcompose.view.ButtonWithIcon
 import com.example.coffesbarcompose.view.ComposableLifecycle
+import com.example.coffesbarcompose.view.IconPlaceHolder
 import com.example.coffesbarcompose.view.RowCoffee
+import com.example.coffesbarcompose.view.RowCoffeePlaceHolder
+import com.example.coffesbarcompose.view.TitlePlaceHolder
+import com.example.coffesbarcompose.view_models.AvatarViewModel
 import com.example.coffesbarcompose.view_models.CartViewModel
 import com.example.coffesbarcompose.view_models.CoffeesViewModel
 import com.example.coffesbarcompose.view_models.UserViewModel
@@ -67,25 +80,43 @@ fun HomeScreen(
     navController: NavController,
     coffeesViewModel: CoffeesViewModel = hiltViewModel(),
     cartViewModel: CartViewModel = viewModel(),
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
+    avatarViewModel: AvatarViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val rowWidth = LocalConfiguration.current.screenWidthDp * 0.42
-    ComposableLifecycle { _, event ->
-        if (event == Lifecycle.Event.ON_CREATE) {
-            coffeesViewModel.getAllCoffees()
-            Log.d("user","${userViewModel.dataUser}")
-        }
-    }
-
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = false
     )
 
+    val painterAvatar = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(avatarViewModel.userAvatar.value.data?.urlAvatar)
+            .build(),
+    )
+
+
+    var isLoadingImageAvatar by remember(painterAvatar) {
+        mutableStateOf(false)
+    }
+
+    if (painterAvatar.state is AsyncImagePainter.State.Loading) {
+        isLoadingImageAvatar = true
+    }
+    if (painterAvatar.state is AsyncImagePainter.State.Success) {
+        isLoadingImageAvatar = false
+    }
+
     val width = LocalConfiguration.current.screenWidthDp * 0.3
 
+    ComposableLifecycle { _, event ->
+        if (event == Lifecycle.Event.ON_CREATE) {
+            coffeesViewModel.getAllCoffees()
+            avatarViewModel.getAllAvatars()
+        }
+    }
 
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch {
@@ -93,17 +124,47 @@ fun HomeScreen(
         }
     }
 
+    fun handleGoOut() {
+        userViewModel.goOutApp()
+        navController.navigate(StackScreensInitial.MainScreen.name)
+    }
+
+    fun handleUpdateAvatar(avatar: AvatarModel) {
+        coroutineScope.launch {
+            sheetState.hide()
+        }
+        val id = userViewModel.dataUser.value.data!!._id
+        val updateAvatarModel = UpdateAvatarModel(avatarId = avatar._id)
+        if (id != null) {
+            avatarViewModel.updateAvatarUser(id, updateAvatarModel)
+        }
+    }
 
     if (coffeesViewModel.data.value.isLoading == true || coffeesViewModel.data.value.exception != null) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-            Column(
-                modifier = Modifier
-                    .padding(all = 20.dp)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+            Column(modifier = Modifier.padding(all = 20.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TitlePlaceHolder()
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        AvatarPlaceHolder()
+                        IconPlaceHolder()
+                    }
+                }
+                LazyVerticalGrid(
+                    columns = GridCells.FixedSize(rowWidth.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    contentPadding = PaddingValues(bottom = 100.dp)
+                ) {
+                    items(coffeesMock) {
+                        RowCoffeePlaceHolder(modifier = Modifier.padding(bottom = 10.dp))
+                    }
+                }
             }
         }
     } else {
@@ -121,12 +182,23 @@ fun HomeScreen(
                         top = 10.dp
                     )
                 ) {
-                    items(mockAvatar) {
-                        AsyncImage(
-                            modifier = Modifier.size(50.dp),
-                            model = ImageRequest.Builder(LocalContext.current).data(it).build(),
-                            contentDescription = "avatar image"
-                        )
+                    if (avatarViewModel.dataAvatars.value.data != null) {
+                        items(avatarViewModel.dataAvatars.value.data!!) {
+                            if (isLoadingImageAvatar) {
+                                AvatarPlaceHolder()
+                            } else {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clickable { handleUpdateAvatar(it) },
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(it.urlAvatar)
+                                        .build(),
+                                    contentDescription = "avatar image"
+                                )
+                            }
+
+                        }
                     }
                 }
             }
@@ -161,23 +233,33 @@ fun HomeScreen(
                                 append("Bar \n")
                             }
                         })
-                        AsyncImage(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(60.dp)
-                                .clickable {
-                                    coroutineScope.launch {
-                                        if (sheetState.isVisible) {
-                                            sheetState.hide()
-                                        } else {
-                                            sheetState.show()
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Image(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .size(60.dp)
+                                    .clickable {
+                                        coroutineScope.launch {
+                                            if (sheetState.isVisible) {
+                                                sheetState.hide()
+                                            } else {
+                                                sheetState.show()
+                                            }
                                         }
-                                    }
-                                },
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data("https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar01.png?alt=media&token=4a3820fa-b757-4bcd-b148-1cd914956112")
-                                .build(), contentDescription = " Image avatar user"
-                        )
+                                    },
+                                painter = painterAvatar,
+                                contentDescription = " Image avatar user"
+                            )
+                            Image(
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .clickable { handleGoOut() },
+                                painter = painterResource(id = R.drawable.power),
+                                contentDescription = "Out App",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.error)
+                            )
+                        }
+
                     }
                     LazyVerticalGrid(
                         columns = GridCells.FixedSize(rowWidth.dp),
@@ -186,7 +268,11 @@ fun HomeScreen(
                     ) {
                         items(coffeesViewModel.data.value.data!!) {
                             RowCoffee(
-                                modifier = Modifier.clickable { navController.navigate(StackScreensApp.DetailsScreen.name + "/${it._id}") },
+                                modifier = Modifier.clickable {
+                                    navController.navigate(
+                                        StackScreensApp.DetailsScreen.name + "/${it._id}"
+                                    )
+                                },
                                 coffee = it,
                                 children = {
                                     ButtonWithIcon(

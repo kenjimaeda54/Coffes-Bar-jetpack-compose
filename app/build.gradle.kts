@@ -53,6 +53,13 @@ android {
 
 dependencies {
 
+    //moshi
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+
+
+    //shared preferences
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
     // Location
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.gms:play-services-base:18.2.0")

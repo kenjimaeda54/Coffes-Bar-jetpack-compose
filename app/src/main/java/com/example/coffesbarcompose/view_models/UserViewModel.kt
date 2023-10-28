@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
@@ -12,6 +13,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.coffesbarcompose.data.DataOrException
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.GeoCodingModel
+import com.example.coffesbarcompose.models.UpdateAvatarModel
+import com.example.coffesbarcompose.models.UserCacheViewModel
 import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
 import com.example.coffesbarcompose.repository.CoffeesBarRepository
@@ -24,7 +27,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 //compartilhar dados no kotlin
 //https://www.youtube.com/watch?v=h61Wqy3qcKg
 //https://github.com/philipplackner/SharingDataBetweenScreens
@@ -33,7 +35,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val geoCodingRepository: GeoCodingRepository,
-    private val coffeesBarRepository: CoffeesBarRepository
+    private val coffeesBarRepository: CoffeesBarRepository,
+    private val userCacheViewModel: UserCacheViewModel
+
 ) :
     ViewModel() {
     private var dataAddressUser: MutableState<DataOrException<GeoCodingModel, Boolean, Exception>> =
@@ -41,14 +45,21 @@ class UserViewModel @Inject constructor(
             DataOrException(null, true, Exception(""))
         )
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    var dataAvatars: MutableState<DataOrException<List<AvatarModel>, Boolean, Exception>> =
-        mutableStateOf(
-            DataOrException(null, true, Exception(""))
-        )
-    var isAnonymous = mutableStateOf(true)
-    var dataUser: MutableState<DataOrException<UserModel, Boolean, Exception>> = mutableStateOf(
-        DataOrException(null, false, Exception(""))
+
+    var isAnonymous = mutableStateOf(
+        userCacheViewModel.getUser() == null
     )
+    var dataUser: MutableState<DataOrException<UserModel, Boolean, Exception>> = mutableStateOf(
+        DataOrException(userCacheViewModel.getUser(), false, Exception(""))
+    )
+
+
+
+    init {
+        val userCache = userCacheViewModel.getUser()
+
+    }
+
 
     fun getLocation(
         activity: Activity,
@@ -108,50 +119,49 @@ class UserViewModel @Inject constructor(
     }
 
 
-    fun createUser(user: UserModel, completion: (data: DataOrException<UserModel?, Boolean, Exception>) -> Unit) {
+    fun createUser(
+        user: UserModel,
+        completion: (data: DataOrException<UserModel?, Boolean, Exception>) -> Unit
+    ) {
         viewModelScope.launch {
             dataUser.value.isLoading = true
             val response = coffeesBarRepository.createUser(user)
             dataUser.value.isLoading = response.isLoading
 
             if (response.data != null) {
-                isAnonymous.value = false
-                dataUser.value.data = response.data
+                userCacheViewModel.saveUser(response.data!!)
                 completion(DataOrException(data = response.data))
-            }else {
-               completion(DataOrException(data = null))
+            } else {
+                completion(DataOrException(data = null))
             }
-
 
         }
     }
 
 
-    fun loginUser(userLoginModel: UserLoginModel) {
+    fun loginUser(
+        userLoginModel: UserLoginModel,
+        completion: (data: DataOrException<UserModel?, Boolean, Exception>) -> Unit
+    ) {
         viewModelScope.launch {
             dataUser.value.isLoading = true
             val response = coffeesBarRepository.loginUser(userLoginModel)
+            dataUser.value.isLoading = response.isLoading
 
             if (response.data != null) {
-                isAnonymous.value = false
-                dataUser.value.data = response.data
+                userCacheViewModel.saveUser(response.data!!)
+                completion(DataOrException(data = response.data))
+            } else {
+                completion(DataOrException(data = null))
             }
-            dataUser.value.isLoading = false
-
         }
     }
 
-    fun getAllAvatars() {
-        viewModelScope.launch {
-            dataAvatars.value.isLoading = true
 
-            dataAvatars.value = coffeesBarRepository.getAvatars()
 
-            if (dataAvatars.toString().isNotEmpty()) {
-                dataAvatars.value.isLoading = false
-            }
-
-        }
+    fun goOutApp() {
+        userCacheViewModel.clearUser()
     }
+
 
 }

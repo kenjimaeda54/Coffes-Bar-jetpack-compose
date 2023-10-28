@@ -75,6 +75,9 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
         mutableStateOf("")
     }
 
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
 
     var visualTransformation by remember {
         mutableStateOf<VisualTransformation>(PasswordVisualTransformation())
@@ -89,6 +92,10 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
             }
         )
 
+    }
+
+    val isLoading by remember(usersViewModel.dataUser.value.isLoading) {
+        mutableStateOf(usersViewModel.dataUser.value.isLoading)
     }
 
 
@@ -148,7 +155,13 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
 
     fun handleLogin() {
         val login = UserLoginModel(email, password)
-       usersViewModel.loginUser(login)
+        usersViewModel.loginUser(login) {
+            if (it.data != null) {
+                navController.navigate(StackScreensInitial.MainScreen.name)
+            } else {
+                errorMessage = "Email ou senha incorretos"
+            }
+        }
     }
 
     ModalBottomSheetLayout(
@@ -230,7 +243,7 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = if (!isValidEmail && email.isNotEmpty()) "Email precisa ser valido" else "",
+                    text = if (!isValidEmail && email.isNotEmpty()) "Email precisa ser valido" else errorMessage.ifEmpty { "" },
                     style = TextStyle(
                         fontFamily = fontsInter,
                         color = MaterialTheme.colorScheme.error.copy(0.6f),
@@ -258,11 +271,15 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
                     )
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                ButtonCommon(
-                    title = "Entrar",
-                    action = { handleLogin() },
-                    enable = isValidPassword && isValidEmail
-                )
+                isLoading?.let {
+                    ButtonCommon(
+                        title = "Entrar",
+                        action = { handleLogin() },
+                        enable = isValidPassword && isValidEmail,
+                        feedbackLoading = it
+                    )
+                }
+
                 Text(
                     modifier = Modifier
                         .clickable { navController.navigate(StackScreensInitial.SignIn.name) }

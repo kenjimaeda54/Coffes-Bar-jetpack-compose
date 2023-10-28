@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.coffesbarcompose.screen.MainScreen
 import com.example.coffesbarcompose.screen.cart.CartScreen
 import com.example.coffesbarcompose.screen.payment_resume.PaymentResume
 import com.example.coffesbarcompose.screen.details.DetailsScreen
@@ -19,6 +20,10 @@ fun NavGraphApp(navController: NavHostController) {
     NavHost(navController = navController, startDestination = BottomBarScreen.Home.route) {
         composable(BottomBarScreen.Home.route) {
             HomeScreen(navController)
+        }
+
+        composable(StackScreensInitial.MainScreen.name) {
+            MainScreen()
         }
 
         composable(BottomBarScreen.Favorite.route) {

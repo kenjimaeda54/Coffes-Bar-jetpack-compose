@@ -2,11 +2,14 @@ package com.example.coffesbarcompose.services
 
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.CoffeesModel
+import com.example.coffesbarcompose.models.UpdateAvatarModel
 import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface CoffeesBarServiceApi {
@@ -25,6 +28,15 @@ interface CoffeesBarServiceApi {
 
     @GET("/avatars")
     suspend fun getAvatars(): List<AvatarModel>
+
+    @GET("/avatars/{id}")
+    suspend fun getOnlyAvatar(@Path("id") id: String): AvatarModel
+
+    @POST("/users/avatar")
+    suspend fun updateAvatarUser(
+        @Query("userId") userId: String,
+        @Body updateAvatarModel: UpdateAvatarModel
+    )
 
 
 }
