@@ -1,5 +1,6 @@
 package com.example.coffesbarcompose.screen.sign_in
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,6 +59,7 @@ import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
+import com.example.coffesbarcompose.view.ButtonCustomOutlineSecurity
 import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.CustomOutlineTextField
 import com.example.coffesbarcompose.view_models.AvatarViewModel
@@ -63,9 +67,15 @@ import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
+
+//-https://proandroiddev.com/jetpack-compose-visualtransformation-made-easier-c5192bde3f03
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavController, avatarViewModel: AvatarViewModel = hiltViewModel()) {
+fun SignIn(
+    usersViewModel: UserViewModel = hiltViewModel(),
+    navController: NavController,
+    avatarViewModel: AvatarViewModel = hiltViewModel()
+) {
     val width = LocalConfiguration.current.screenWidthDp * 0.3
 
     val sheetValue = rememberModalBottomSheetState(
@@ -86,6 +96,7 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
     var password by remember {
         mutableStateOf("")
     }
+
     var currentTextField by remember {
         mutableStateOf("")
     }
@@ -109,7 +120,12 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
     }
 
     var dataAvatar by remember {
-        mutableStateOf(AvatarModel(_id =  "64d189bba57ef7a8ec728dcf", urlAvatar = "https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar01.png?alt=media&token=4a3820fa-b757-4bcd-b148-1cd914956112"))
+        mutableStateOf(
+            AvatarModel(
+                _id = "64d189bba57ef7a8ec728dcf",
+                urlAvatar = "https://firebasestorage.googleapis.com/v0/b/uploadimagesapicoffee.appspot.com/o/avatar01.png?alt=media&token=4a3820fa-b757-4bcd-b148-1cd914956112"
+            )
+        )
     }
 
     val isValidPassword by remember(password) {
@@ -148,9 +164,9 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
     }
 
 
-   val isLoading by remember(usersViewModel.dataUser.value.isLoading) {
-       mutableStateOf(usersViewModel.dataUser.value.isLoading)
-   }
+    val isLoading by remember(usersViewModel.dataUser.value.isLoading) {
+        mutableStateOf(usersViewModel.dataUser.value.isLoading)
+    }
 
     fun handleCurrentTextField(field: String) {
         currentTextField = field
@@ -195,13 +211,12 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
         val user =
             UserModel(name = "", email = email, password = password, avatarId = dataAvatar._id)
         usersViewModel.createUser(user) {
-            if(it.data != null) {
+            if (it.data != null) {
                 navController.navigate(StackScreensInitial.MainScreen.name)
-            }else {
+            } else {
                 errorMessage = "Este email ja foi registrado na base"
             }
         }
-
 
 
     }
@@ -312,7 +327,11 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
                     contentDescription = "Image Avatar",
                     contentScale = ContentScale.Fit,
                 )
-                Spacer(modifier = Modifier.padding(vertical = 20.dp))
+                Spacer(
+                    modifier = Modifier.height(
+                        20.dp
+                    )
+                )
                 ButtonCustomOutline(
                     action = { handleCurrentTextField("email") },
                     text = email.ifEmpty { "Email" }
@@ -333,9 +352,10 @@ fun SignIn(usersViewModel: UserViewModel = hiltViewModel(),navController: NavCon
                         20.dp
                     )
                 )
-                ButtonCustomOutline(
+                ButtonCustomOutlineSecurity(
                     action = { handleCurrentTextField("password") },
-                    text = password.ifEmpty { "Password" }
+                    text = password.ifEmpty { "Password" },
+                    visualTransformation = if (password.isNotEmpty()) PasswordVisualTransformation() else VisualTransformation.None
                 )
                 Text(
                     text = if (!isValidPassword && password.isNotEmpty()) "Senha precisa conter caracter maisculo, especial e digito" else "",

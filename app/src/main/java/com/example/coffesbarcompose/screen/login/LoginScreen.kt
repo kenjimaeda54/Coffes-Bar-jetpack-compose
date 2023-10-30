@@ -47,6 +47,7 @@ import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
+import com.example.coffesbarcompose.view.ButtonCustomOutlineSecurity
 import com.example.coffesbarcompose.view.CustomOutlineTextField
 import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
@@ -257,9 +258,10 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
                         20.dp
                     )
                 )
-                ButtonCustomOutline(
+                ButtonCustomOutlineSecurity(
                     action = { handleCurrentTextField("password") },
-                    text = password.ifEmpty { "Password" }
+                    text = password.ifEmpty { "Password" },
+                    visualTransformation = if (password.isNotEmpty()) PasswordVisualTransformation() else VisualTransformation.None
                 )
                 Text(
                     text = if (!isValidPassword && password.isNotEmpty()) "Senha precisa conter caracter maisculo, especial e digito" else "",

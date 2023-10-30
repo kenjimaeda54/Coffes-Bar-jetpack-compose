@@ -8,6 +8,8 @@ class CartViewModel: ViewModel() {
    var coffeesAdded = mutableStateListOf<CoffeesModel>()
 
 
+
+
     fun addedOrRemoveToCart(coffeesModel: CoffeesModel) {
          if(coffeesAdded.contains(coffeesModel)) coffeesAdded.remove(coffeesModel) else coffeesAdded.add(coffeesModel)
 
