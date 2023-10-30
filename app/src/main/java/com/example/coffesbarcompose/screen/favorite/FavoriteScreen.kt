@@ -24,7 +24,7 @@ fun FavoriteScreen() {
                 Column(modifier = Modifier.padding(vertical = 20.dp)) {
                     Text("Valor total: ${it.priceCartTotal}")
                     it.orders.forEach { orders ->
-                        RowOrders(modifier = Modifier.padding(vertical = 10.dp),order = orders)
+//                        RowOrders(modifier = Modifier.padding(vertical = 10.dp), coffee = orders)
                     }
                 }
 

@@ -79,7 +79,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     navController: NavController,
     coffeesViewModel: CoffeesViewModel = hiltViewModel(),
-    cartViewModel: CartViewModel = viewModel(),
+    cartViewModel: CartViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
     avatarViewModel: AvatarViewModel = hiltViewModel()
 ) {

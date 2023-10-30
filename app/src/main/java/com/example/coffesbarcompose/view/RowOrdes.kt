@@ -1,6 +1,5 @@
 package com.example.coffesbarcompose.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,19 +24,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.coffesbarcompose.R
-import com.example.coffesbarcompose.mocks.ordersByUserMock
+import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.models.Orders
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun RowOrders(modifier: Modifier = Modifier,order: Orders) {
+fun RowOrders(modifier: Modifier = Modifier, order: Orders) {
     val widthBody = LocalConfiguration.current.screenWidthDp * 0.3
 
     Surface(
@@ -79,7 +75,9 @@ fun RowOrders(modifier: Modifier = Modifier,order: Orders) {
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.secondary,
                         fontSize = 15.sp
-                    )
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = order.price,
@@ -112,7 +110,7 @@ fun RowOrders(modifier: Modifier = Modifier,order: Orders) {
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                 )
                 Text(
-                    text = "1",
+                    text = "${order.quantity}",
                     style = TextStyle(
                         fontFamily = fontsInter,
                         fontWeight = FontWeight.Light,
@@ -139,8 +137,3 @@ fun RowOrders(modifier: Modifier = Modifier,order: Orders) {
 }
 
 
-@Composable
-@Preview
-fun RowOrdersPreview() {
-    RowOrders(order = ordersByUserMock[0])
-}

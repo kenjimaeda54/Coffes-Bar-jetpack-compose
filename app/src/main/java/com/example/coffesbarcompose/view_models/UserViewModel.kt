@@ -55,10 +55,6 @@ class UserViewModel @Inject constructor(
 
 
 
-    init {
-        val userCache = userCacheViewModel.getUser()
-
-    }
 
 
     fun getLocation(
