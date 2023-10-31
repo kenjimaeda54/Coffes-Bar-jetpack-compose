@@ -13,10 +13,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -33,23 +31,34 @@ import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.RowOrders
 import com.example.coffesbarcompose.view.RowTitleAndSubTitle
 import com.example.coffesbarcompose.view_models.CartViewModel
-import kotlin.random.Random
 
 
 @Composable
 fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
-    val ordersByUser by remember(parentViewModel.returnListOrders()) {
-        mutableStateOf(parentViewModel.returnListOrders()[0])
-    }
-    val totalPrice by remember(ordersByUser) {
-        val price = ordersByUser.priceCartTotal.split("R$")[1].replace(",", ".")
-            .toDouble() + ordersByUser.tax.split("R$")[1].replace(",", ".").toDouble()
-        mutableStateOf(
-            Format.formatDoubleToMoneyReal(price)
-        )
+//
+    val totalPrice by remember(parentViewModel.orderCart.value.priceCartTotal) {
+        if (parentViewModel.orderCart.value.priceCartTotal.count() > 2) {
+            val price =
+                parentViewModel.orderCart.value.priceCartTotal.split("R$")[1].replace(",", ".")
+                    .toDouble() + parentViewModel.orderCart.value.tax.split("R$")[1].replace(
+                    ",",
+                    "."
+                )
+                    .toDouble()
+            mutableStateOf(
+                Format.formatDoubleToMoneyReal(price)
+            )
+        } else {
+            mutableStateOf("")
+        }
     }
 
+    ComposableLifecycle { _, event ->
+        if (event == Lifecycle.Event.ON_CREATE) {
+            parentViewModel.handleOrderToCart()
+        }
 
+    }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(
@@ -68,8 +77,11 @@ fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
                     fontSize = 18.sp
                 )
             )
-            ordersByUser.orders.forEach {
-                RowOrders(order = it)
+            parentViewModel.orderCart.value.orders.forEach {
+                RowOrders(
+                    order = it,
+                    actionAdd = { parentViewModel.handleAddQuantityToCart(it) },
+                    actionRemove = { parentViewModel.handleRemoveQuantityToCart(it) })
                 Spacer(modifier = Modifier.padding(vertical = 10.dp))
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -77,9 +89,12 @@ fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
             Spacer(modifier = Modifier.padding(vertical = 5.dp))
             RowTitleAndSubTitle(
                 tile = "Taxa de entrega",
-                subTitle = ordersByUser.tax
+                subTitle = parentViewModel.orderCart.value.tax
             )
-            RowTitleAndSubTitle(tile = "Valor", subTitle = ordersByUser.priceCartTotal)
+            RowTitleAndSubTitle(
+                tile = "Valor",
+                subTitle = parentViewModel.orderCart.value.priceCartTotal
+            )
             Spacer(modifier = Modifier.padding(vertical = 5.dp))
             Divider(thickness = 0.2.dp, color = MaterialTheme.colorScheme.outline)
             Spacer(modifier = Modifier.padding(vertical = 5.dp))

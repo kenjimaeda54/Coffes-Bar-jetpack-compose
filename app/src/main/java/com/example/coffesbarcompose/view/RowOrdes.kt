@@ -35,7 +35,7 @@ import com.example.coffesbarcompose.models.Orders
 import com.example.coffesbarcompose.ui.theme.fontsInter
 
 @Composable
-fun RowOrders(modifier: Modifier = Modifier, order: Orders) {
+fun RowOrders(modifier: Modifier = Modifier, order: Orders,actionAdd: () -> Unit,actionRemove: () -> Unit) {
     val widthBody = LocalConfiguration.current.screenWidthDp * 0.3
 
     Surface(
@@ -103,7 +103,7 @@ fun RowOrders(modifier: Modifier = Modifier, order: Orders) {
                         .height(25.dp),
                     icon = painterResource(id = R.drawable.pluss),
                     sizeIcon = 15,
-                    action = {},
+                    action = {actionAdd.invoke()},
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
@@ -124,7 +124,7 @@ fun RowOrders(modifier: Modifier = Modifier, order: Orders) {
                         .height(25.dp),
                     icon = painterResource(id = R.drawable.minus),
                     sizeIcon = 15,
-                    action = {},
+                    action = {actionRemove.invoke()},
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),

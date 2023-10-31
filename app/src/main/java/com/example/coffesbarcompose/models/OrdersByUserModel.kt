@@ -13,7 +13,7 @@ data class Orders(
     val _id: String,
     val title: String,
     val price: String,
-    val quantity: Int,
+    var quantity: Int,
     val urlImage: String,
     val coffeeId: String
 )
