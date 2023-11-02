@@ -31,8 +31,7 @@ fun NavGraphApp(navController: NavHostController) {
         }
 
 
-        composable(BottomBarScreen.Home.route) { entry ->
-
+        composable(BottomBarScreen.Home.route) {
             HomeScreen(navController)
         }
 

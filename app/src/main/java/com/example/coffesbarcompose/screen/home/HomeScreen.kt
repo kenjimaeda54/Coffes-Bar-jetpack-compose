@@ -74,6 +74,7 @@ import kotlinx.coroutines.launch
 
 //ciclos de vida https://medium.com/@mohammadjoumani/life-cycle-in-jetpack-compose-2e96136ab936
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(

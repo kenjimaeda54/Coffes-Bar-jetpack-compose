@@ -1,5 +1,6 @@
 package com.example.coffesbarcompose.view_models
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,6 @@ import com.example.coffesbarcompose.models.OrdersByUserModel
 import com.example.coffesbarcompose.models.UserCacheViewModel
 import com.example.coffesbarcompose.utility.Format
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.Normalizer.Form
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.random.Random
@@ -46,6 +46,7 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
 
     fun handleOrderToCart() {
 
+
         val orders: List<Orders> = coffeesAdded.map {
             Orders(
                 _id = UUID.randomUUID().toString(),
@@ -67,6 +68,32 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
                 tax = Format.formatDoubleToMoneyReal(tax),
                 userId = user!!._id!!
             )
+
+    }
+
+
+    fun handleRemoveToCart(order: Orders) {
+        val orders: List<Orders> = orderCart.value.orders.filter { it.coffeeId != order.coffeeId }
+        coffeesAdded.removeIf { it._id == order.coffeeId }
+        if (orders.isEmpty()) {
+            orderCart.value = OrdersByUserModel(
+                _id = "",
+                orders = emptyList(),
+                priceCartTotal = "",
+                tax = "",
+                userId = ""
+            )
+
+        } else {
+            orderCart.value = OrdersByUserModel(
+                _id = orderCart.value._id,
+                orders = orders,
+                priceCartTotal = returnPriceCart(orders),
+                tax = orderCart.value.tax,
+                userId = orderCart.value.userId
+            )
+
+        }
 
     }
 
