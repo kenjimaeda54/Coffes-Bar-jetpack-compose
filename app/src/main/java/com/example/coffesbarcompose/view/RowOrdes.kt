@@ -1,6 +1,8 @@
 package com.example.coffesbarcompose.view
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -10,16 +12,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.IconButtonDefaults
@@ -48,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.coffesbarcompose.R
@@ -90,18 +97,12 @@ fun RowOrders(
             swappableState.snapTo(0)
         }
     }
-    
+
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .offset {
-                IntOffset(
-                    swappableState.offset.value
-                        .roundToInt()
-                        .unaryMinus(), 0
-                )
-            }
+
             .swipeable(
                 state = swappableState,
                 anchors = anchors,
@@ -111,10 +112,34 @@ fun RowOrders(
             )
 
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(75.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.zIndex(-1f), contentAlignment = Alignment.CenterStart) {
+                Image(
+                    modifier = Modifier.size(25.dp),
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.error)
+                )
+            }
+        }
+
         Surface(
             modifier = modifier
                 .fillMaxWidth()
-                .height(75.dp),
+                .height(75.dp)
+                .offset {
+                    IntOffset(
+                        swappableState.offset.value
+                            .roundToInt()
+                            .unaryMinus(), 0
+                    )
+                },
             color = MaterialTheme.colorScheme.secondaryContainer,
             shape = RoundedCornerShape(10.dp)
         ) {
@@ -206,7 +231,6 @@ fun RowOrders(
                 }
             }
         }
-
 
     }
 }
