@@ -2,6 +2,7 @@ package com.example.coffesbarcompose.services
 
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.CoffeesModel
+import com.example.coffesbarcompose.models.CreateCartModel
 import com.example.coffesbarcompose.models.UpdateAvatarModel
 import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
@@ -25,6 +26,12 @@ interface CoffeesBarServiceApi {
     suspend fun loginUser(
         @Body userLoginModel: UserLoginModel
     ): UserModel
+
+
+    @POST("/carts")
+    suspend fun createCart(
+        @Body createCartModel: CreateCartModel
+    )
 
     @GET("/avatars")
     suspend fun getAvatars(): List<AvatarModel>

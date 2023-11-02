@@ -56,9 +56,9 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
-
-
-//
+    val isLoading by remember {
+        mutableStateOf(false)
+    }
     val totalPrice by remember(parentViewModel.orderCart.value.priceCartTotal) {
         if (parentViewModel.orderCart.value.priceCartTotal.count() > 2) {
             val price =
@@ -82,6 +82,12 @@ fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
                 parentViewModel.handleOrderToCart()
             }
         }
+
+    }
+
+    fun handleNavigation() {
+        parentViewModel.createCart(parentViewModel.orderCart.value)
+        navController.navigate(StackScreensApp.PaymentResume.name)
 
     }
 
@@ -111,7 +117,7 @@ fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
                         order = it,
                         actionAdd = { parentViewModel.handleAddQuantityToCart(it) },
                         actionRemove = { parentViewModel.handleRemoveQuantityToCart(it) },
-                        actionDeleteOrder = {  parentViewModel.handleRemoveToCart(it) }
+                        actionDeleteOrder = { parentViewModel.handleRemoveToCart(it) }
                     )
 
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -134,7 +140,10 @@ fun CartScreen(navController: NavController, parentViewModel: CartViewModel) {
                 ButtonCommon(
                     modifier = Modifier.padding(bottom = 55.dp, top = 10.dp),
                     title = "Finalizar a compra",
-                    action = { navController.navigate(StackScreensApp.PaymentResume.name) })
+                    action = { handleNavigation() },
+                    feedbackLoading = isLoading
+
+                )
             } else {
                 Text(
                     text = "Você não possui nada no carrinho, vamos à compra", style = TextStyle(

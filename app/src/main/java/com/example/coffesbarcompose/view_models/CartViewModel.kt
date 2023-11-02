@@ -1,21 +1,26 @@
 package com.example.coffesbarcompose.view_models
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.coffesbarcompose.models.CoffeesModel
+import com.example.coffesbarcompose.models.CreateCartModel
 import com.example.coffesbarcompose.models.Orders
 import com.example.coffesbarcompose.models.OrdersByUserModel
 import com.example.coffesbarcompose.models.UserCacheViewModel
+import com.example.coffesbarcompose.repository.CoffeesBarRepository
 import com.example.coffesbarcompose.utility.Format
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
-class CartViewModel @Inject constructor(private val userCacheViewModel: UserCacheViewModel) :
+class CartViewModel @Inject constructor(
+    userCacheViewModel: UserCacheViewModel,
+    private val coffeesBarRepository: CoffeesBarRepository
+) :
     ViewModel() {
     var coffeesAdded = mutableStateListOf<CoffeesModel>()
     var orderCart = mutableStateOf(
@@ -37,11 +42,12 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
     }
 
 
-    private fun returnPriceCart(orders: List<Orders>): String {
+    private fun returnPriceCartAndTax(orders: List<Orders>): Pair<String,String> {
         val priceTotal =
             orders.map { it.price.split("R$")[1].replace(",", ".").toDouble() * it.quantity }
                 .reduce { acc, d -> acc + d }
-        return Format.formatDoubleToMoneyReal(priceTotal)
+        val tax =   priceTotal * 0.10
+        return Format.formatDoubleToMoneyReal(priceTotal) to Format.formatDoubleToMoneyReal(tax)
     }
 
     fun handleOrderToCart() {
@@ -58,14 +64,15 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
             )
         }
 
-        val tax = Random.nextDouble(3.0, 6.0)
+       val (priceCartTotal,tax) = returnPriceCartAndTax(orders)
+
 
         orderCart.value =
             OrdersByUserModel(
                 _id = UUID.randomUUID().toString(),
                 orders = orders,
-                priceCartTotal = returnPriceCart(orders),
-                tax = Format.formatDoubleToMoneyReal(tax),
+                priceCartTotal = priceCartTotal,
+                tax = tax,
                 userId = user!!._id!!
             )
 
@@ -75,6 +82,7 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
     fun handleRemoveToCart(order: Orders) {
         val orders: List<Orders> = orderCart.value.orders.filter { it.coffeeId != order.coffeeId }
         coffeesAdded.removeIf { it._id == order.coffeeId }
+        val (priceCartTotal) = returnPriceCartAndTax(orders)
         if (orders.isEmpty()) {
             orderCart.value = OrdersByUserModel(
                 _id = "",
@@ -88,7 +96,7 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
             orderCart.value = OrdersByUserModel(
                 _id = orderCart.value._id,
                 orders = orders,
-                priceCartTotal = returnPriceCart(orders),
+                priceCartTotal = priceCartTotal,
                 tax = orderCart.value.tax,
                 userId = orderCart.value.userId
             )
@@ -124,10 +132,13 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
             }
         }
 
+        val (priceCartTotal) = returnPriceCartAndTax(newOrder)
+
+
         orderCart.value = OrdersByUserModel(
             _id = orderCart.value._id,
             orders = newOrder,
-            priceCartTotal = returnPriceCart(newOrder),
+            priceCartTotal = priceCartTotal,
             tax = orderCart.value.tax,
             userId = user!!._id!!
         )
@@ -157,13 +168,39 @@ class CartViewModel @Inject constructor(private val userCacheViewModel: UserCach
                 )
             }
         }
-
+        val (priceCartTotal) = returnPriceCartAndTax(newOrder)
         orderCart.value = OrdersByUserModel(
             _id = orderCart.value._id,
             orders = newOrder,
-            priceCartTotal = returnPriceCart(newOrder),
+            priceCartTotal = priceCartTotal,
             tax = orderCart.value.tax,
             userId = user!!._id!!
         )
     }
+
+
+    fun createCart(ordersByUserModel: OrdersByUserModel) {
+        val newOrders = ordersByUserModel.orders.map {
+            Orders(
+                title = it.title,
+                price = it.price,
+                quantity = it.quantity,
+                urlImage = it.urlImage,
+                coffeeId = it.coffeeId
+            )
+        }
+        val cart = CreateCartModel(
+            cart = OrdersByUserModel(
+                orders = newOrders,
+                priceCartTotal = ordersByUserModel.priceCartTotal,
+                tax = ordersByUserModel.tax,
+                userId = ordersByUserModel.userId
+            )
+        )
+        viewModelScope.launch {
+            coffeesBarRepository.createCart(createCartModel = cart)
+        }
+    }
+
+
 }

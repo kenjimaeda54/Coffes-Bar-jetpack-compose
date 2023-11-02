@@ -42,14 +42,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.models.AddressUserModel
 import com.example.coffesbarcompose.route.StackScreensApp
+import com.example.coffesbarcompose.utility.Format
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
+import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.CustomOutlineTextField
 import com.example.coffesbarcompose.view.RowTitleAndSubTitle
+import com.example.coffesbarcompose.view_models.CartViewModel
 import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -61,7 +65,8 @@ import kotlin.random.Random
 @Composable
 fun PaymentResume(
     navController: NavHostController,
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
+    parentViewModel: CartViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
     val deliveryFee = Random.nextDouble(3.0, 6.0)
@@ -92,6 +97,23 @@ fun PaymentResume(
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = false
     )
+
+    val totalPrice by remember(parentViewModel.orderCart.value.priceCartTotal) {
+        if (parentViewModel.orderCart.value.priceCartTotal.count() > 2) {
+            val price =
+                parentViewModel.orderCart.value.priceCartTotal.split("R$")[1].replace(",", ".")
+                    .toDouble() + parentViewModel.orderCart.value.tax.split("R$")[1].replace(
+                    ",",
+                    "."
+                )
+                    .toDouble()
+            mutableStateOf(
+                Format.formatDoubleToMoneyReal(price)
+            )
+        } else {
+            mutableStateOf("")
+        }
+    }
 
 
     val context = LocalContext.current
@@ -274,13 +296,16 @@ fun PaymentResume(
                 Spacer(modifier = Modifier.padding(vertical = 5.dp))
                 RowTitleAndSubTitle(
                     tile = "Taxa de entrega",
-                    subTitle = "R$ formatDeliveryFree"
+                    subTitle = parentViewModel.orderCart.value.tax
                 )
-                RowTitleAndSubTitle(tile = "Valor", subTitle = "R$ 35,00")
+                RowTitleAndSubTitle(
+                    tile = "Valor",
+                    subTitle = parentViewModel.orderCart.value.priceCartTotal
+                )
                 Spacer(modifier = Modifier.padding(vertical = 5.dp))
                 Divider(thickness = 0.2.dp, color = MaterialTheme.colorScheme.outline)
                 Spacer(modifier = Modifier.padding(vertical = 5.dp))
-                RowTitleAndSubTitle(tile = "Total", subTitle = "$ 35,00")
+                RowTitleAndSubTitle(tile = "Total", subTitle = totalPrice)
                 ButtonCommon(
                     modifier = Modifier.padding(bottom = 24.dp, top = 10.dp),
                     title = "Tudo certo",

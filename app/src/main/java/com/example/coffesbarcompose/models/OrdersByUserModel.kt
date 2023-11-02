@@ -1,7 +1,7 @@
 package com.example.coffesbarcompose.models
 
 data class OrdersByUserModel(
-    val _id: String,
+    val _id: String? = null,
     val orders: List<Orders>,
     val priceCartTotal: String,
     val tax: String,
@@ -10,7 +10,7 @@ data class OrdersByUserModel(
 
 
 data class Orders(
-    val _id: String,
+    val _id: String? = null,
     val title: String,
     val price: String,
     var quantity: Int,

@@ -34,6 +34,7 @@ import com.example.coffesbarcompose.mocks.coffeesMock
 import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.view.ButtonCommon
+import com.example.coffesbarcompose.view_models.CartViewModel
 
 @Composable
 fun DetailsScreen(navController: NavController, coffeeId: String?) {

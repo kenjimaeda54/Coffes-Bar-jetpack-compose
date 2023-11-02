@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.coffesbarcompose.data.DataOrException
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.CoffeesModel
+import com.example.coffesbarcompose.models.CreateCartModel
 import com.example.coffesbarcompose.models.UpdateAvatarModel
 import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
@@ -74,6 +75,16 @@ class CoffeesBarRepository @Inject constructor(private val coffeesBarServiceApi:
             return DataOrException(exception = e)
         }
         return DataOrException(data = data)
+    }
+
+    suspend fun createCart(createCartModel: CreateCartModel): DataOrException<Boolean, Boolean, Exception> {
+        try {
+            coffeesBarServiceApi.createCart(createCartModel)
+        } catch (e: Exception) {
+            Log.d("Error", e.toString())
+            return DataOrException(exception = e)
+        }
+        return DataOrException(data = true)
     }
 
 

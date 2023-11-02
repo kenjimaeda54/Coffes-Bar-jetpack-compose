@@ -54,13 +54,18 @@ fun NavGraphApp(navController: NavHostController) {
             StackScreensApp.DetailsScreen.name + "/{coffeeId}",
             arguments = listOf(navArgument("coffeeId") { type = NavType.StringType })
         ) {
+
             DetailsScreen(
                 navController = navController,
                 coffeeId = it.arguments?.getString("coffeeId")
             )
         }
-        composable(route = StackScreensApp.PaymentResume.name) {
-            PaymentResume(navController)
+        composable(route = StackScreensApp.PaymentResume.name) {entry ->
+            val parentEntry = remember(entry) {
+                navController.getBackStackEntry(BottomBarScreen.Home.route)
+            }
+            val parentViewModel = hiltViewModel<CartViewModel>(parentEntry)
+            PaymentResume(navController, parentViewModel = parentViewModel)
         }
 
         composable(route = StackScreensApp.PaymentFinished.name) {
