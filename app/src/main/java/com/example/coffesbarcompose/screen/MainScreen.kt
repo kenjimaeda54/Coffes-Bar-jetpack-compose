@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.coffesbarcompose.route.BottomBarScreen
 import com.example.coffesbarcompose.route.BottomCustomNavigation
 import com.example.coffesbarcompose.route.BottomScreens
 import com.example.coffesbarcompose.route.NavGraphApp
@@ -44,12 +45,14 @@ fun MainScreen(userViewModel: UserViewModel = hiltViewModel()) {
     val stringRoutesStack = StackScreensApp.values().map { it.toString() }
     val stringBottomRoute = BottomScreens.screens().map { it.route }
 
-    Log.d("user","${userViewModel.isAnonymous.value}")
 
-    if(!userViewModel.isAnonymous.value){
+    if (!userViewModel.isAnonymous.value) {
         Scaffold(
             topBar = {
-                if (stringRoutesStack.contains(currentRoute?.get(0)) && currentRoute?.get(0) != StackScreensApp.PaymentFinished.name) TopAppBar(
+                if (stringRoutesStack.contains(currentRoute?.get(0)) && currentRoute?.get(0) != StackScreensApp.PaymentFinished.name && currentRoute?.get(
+                        0
+                    ) != BottomBarScreen.Home.route
+                ) TopAppBar(
                     title = { Text("") },
                     navigationIcon = {
                         Image(
@@ -76,14 +79,14 @@ fun MainScreen(userViewModel: UserViewModel = hiltViewModel()) {
             }) {
             NavGraphApp(navController = navController)
         }
-    }else {
+    } else {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text("") },
                     navigationIcon = {
                         if (currentRoute != null) {
-                            if(currentRoute[0] != StackScreensInitial.Login.name)  Image(
+                            if (currentRoute[0] != StackScreensInitial.Login.name) Image(
                                 modifier = Modifier
                                     .size(15.dp)
                                     .clickable {

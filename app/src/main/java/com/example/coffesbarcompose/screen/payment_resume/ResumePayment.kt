@@ -69,7 +69,6 @@ fun PaymentResume(
     parentViewModel: CartViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val deliveryFee = Random.nextDouble(3.0, 6.0)
     var isLoading by remember {
         mutableStateOf(false)
     }
@@ -309,7 +308,8 @@ fun PaymentResume(
                 ButtonCommon(
                     modifier = Modifier.padding(bottom = 24.dp, top = 10.dp),
                     title = "Tudo certo",
-                    action = { handleNavigate() })
+                    action = { handleNavigate() },
+                    enable = addressCity.isNotEmpty() || addressStreet.isNotEmpty() || addressStreetNumber.isNotEmpty() || addressNeighborhood.isNotEmpty())
 
             }
         }

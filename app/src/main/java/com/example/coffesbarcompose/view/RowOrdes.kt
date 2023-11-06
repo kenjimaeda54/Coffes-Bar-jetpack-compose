@@ -68,9 +68,11 @@ import kotlin.math.roundToInt
 fun RowOrders(
     modifier: Modifier = Modifier,
     order: Orders,
-    actionAdd: () -> Unit,
-    actionRemove: () -> Unit,
-    actionDeleteOrder: () -> Unit,
+    actionAdd: (() -> Unit)? = null,
+    actionRemove: (() -> Unit)? = null,
+    actionDeleteOrder: (() -> Unit)? = null,
+    enableSwipe: Boolean = true,
+    actionClickable: (() -> Unit)? = null
 ) {
 
     val density = LocalDensity.current
@@ -93,7 +95,8 @@ fun RowOrders(
     //launchedEffect permite trabalhar com courtines
     if (swappableState.offset.value.toInt() > (widthPx - 1)) {
         LaunchedEffect(Unit) {
-            actionDeleteOrder.invoke()
+            actionDeleteOrder?.invoke()
+
             swappableState.snapTo(0)
         }
     }
@@ -102,14 +105,17 @@ fun RowOrders(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-
             .swipeable(
                 state = swappableState,
+                enabled = enableSwipe,
                 anchors = anchors,
                 thresholds = { _, _ -> FractionalThreshold(0.3f) },
                 orientation = Orientation.Horizontal,
                 reverseDirection = true,
             )
+            .clickable {
+                actionClickable?.invoke()
+            }
 
     ) {
         Row(
@@ -201,7 +207,7 @@ fun RowOrders(
                             .height(25.dp),
                         icon = painterResource(id = R.drawable.pluss),
                         sizeIcon = 15,
-                        action = { actionAdd.invoke() },
+                        action = { actionAdd?.invoke() },
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = MaterialTheme.colorScheme.tertiary
                         ),
@@ -222,7 +228,7 @@ fun RowOrders(
                             .height(25.dp),
                         icon = painterResource(id = R.drawable.minus),
                         sizeIcon = 15,
-                        action = { actionRemove.invoke() },
+                        action = { actionRemove?.invoke() },
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = MaterialTheme.colorScheme.tertiary
                         ),

@@ -21,7 +21,6 @@ import com.example.coffesbarcompose.screen.payment_finished.PaymentFinished
 import com.example.coffesbarcompose.view_models.CartViewModel
 
 
-
 @Composable
 fun NavGraphApp(navController: NavHostController) {
 
@@ -36,8 +35,13 @@ fun NavGraphApp(navController: NavHostController) {
         }
 
 
-        composable(BottomBarScreen.Favorite.route) {
-            FavoriteScreen()
+        composable(BottomBarScreen.Favorite.route) { entry ->
+            val parentEntry = remember(entry) {
+                navController.getBackStackEntry(BottomBarScreen.Home.route)
+                //tem que ser uma rota ja existente se colocar rota do  carrinho nao vai funcionar, porque o usuario nao inicia nessas tela, ele iria precisar navegar para eu ter a instancia e  favoritos posso ir direto da home
+            }
+            val parentViewModel = hiltViewModel<CartViewModel>(parentEntry)
+            FavoriteScreen(cartViewModel = parentViewModel, navController)
         }
 
         //maneira de compartilhar view model via navegacao
@@ -60,7 +64,7 @@ fun NavGraphApp(navController: NavHostController) {
                 coffeeId = it.arguments?.getString("coffeeId")
             )
         }
-        composable(route = StackScreensApp.PaymentResume.name) {entry ->
+        composable(route = StackScreensApp.PaymentResume.name) { entry ->
             val parentEntry = remember(entry) {
                 navController.getBackStackEntry(BottomBarScreen.Home.route)
             }
@@ -69,6 +73,7 @@ fun NavGraphApp(navController: NavHostController) {
         }
 
         composable(route = StackScreensApp.PaymentFinished.name) {
+
             PaymentFinished(navController)
         }
     }

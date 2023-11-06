@@ -3,6 +3,7 @@ package com.example.coffesbarcompose.services
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.CoffeesModel
 import com.example.coffesbarcompose.models.CreateCartModel
+import com.example.coffesbarcompose.models.OrdersByUserModel
 import com.example.coffesbarcompose.models.UpdateAvatarModel
 import com.example.coffesbarcompose.models.UserLoginModel
 import com.example.coffesbarcompose.models.UserModel
@@ -43,7 +44,11 @@ interface CoffeesBarServiceApi {
     suspend fun updateAvatarUser(
         @Query("userId") userId: String,
         @Body updateAvatarModel: UpdateAvatarModel
+
     )
+
+    @GET("/carts/orders")
+    suspend fun getOrders(@Query("userId") userId: String): List<OrdersByUserModel>
 
 
 }
