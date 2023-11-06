@@ -1,11 +1,9 @@
 package com.example.coffesbarcompose.route
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -13,22 +11,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.coffesbarcompose.screen.MainScreen
 import com.example.coffesbarcompose.screen.cart.CartScreen
-import com.example.coffesbarcompose.screen.payment_resume.PaymentResume
 import com.example.coffesbarcompose.screen.details.DetailsScreen
 import com.example.coffesbarcompose.screen.favorite.FavoriteScreen
 import com.example.coffesbarcompose.screen.home.HomeScreen
+import com.example.coffesbarcompose.screen.login.LogInScreen
 import com.example.coffesbarcompose.screen.payment_finished.PaymentFinished
+import com.example.coffesbarcompose.screen.payment_resume.PaymentResume
+import com.example.coffesbarcompose.screen.sign_in.SignIn
 import com.example.coffesbarcompose.view_models.CartViewModel
 
 
 @Composable
-fun NavGraphApp(navController: NavHostController) {
+fun NavGraphApp(navController: NavHostController, isAnonymous: MutableState<Boolean>) {
 
-    NavHost(navController = navController, startDestination = BottomBarScreen.Home.route) {
-        composable(StackScreensInitial.MainScreen.name) {
-            MainScreen()
-        }
-
+    NavHost(
+        navController = navController,
+        startDestination = if (isAnonymous.value) StackScreensApp.Login.name else BottomBarScreen.Home.route
+    ) {
 
         composable(BottomBarScreen.Home.route) {
             HomeScreen(navController)
@@ -75,6 +74,17 @@ fun NavGraphApp(navController: NavHostController) {
         composable(route = StackScreensApp.PaymentFinished.name) {
 
             PaymentFinished(navController)
+        }
+
+
+        composable(StackScreensApp.Login.name) {
+            LogInScreen(navController = navController)
+        }
+        composable(StackScreensApp.SignIn.name) {
+            SignIn(navController = navController)
+        }
+        composable(StackScreensApp.MainScreen.name) {
+            MainScreen()
         }
     }
 }

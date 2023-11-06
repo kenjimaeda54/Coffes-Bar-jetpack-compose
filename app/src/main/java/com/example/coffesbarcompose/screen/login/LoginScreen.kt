@@ -42,7 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.models.UserLoginModel
-import com.example.coffesbarcompose.route.StackScreensInitial
+import com.example.coffesbarcompose.route.BottomBarScreen
+import com.example.coffesbarcompose.route.StackScreensApp
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.ButtonCommon
@@ -158,7 +159,11 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
         val login = UserLoginModel(email, password)
         usersViewModel.loginUser(login) {
             if (it.data != null) {
-                navController.navigate(StackScreensInitial.MainScreen.name)
+                navController.navigate(BottomBarScreen.Home.route) {
+                    popUpTo(StackScreensApp.Login.name) {
+                        inclusive = true
+                    }
+                }
             } else {
                 errorMessage = "Email ou senha incorretos"
             }
@@ -284,7 +289,7 @@ fun LogInScreen(usersViewModel: UserViewModel = hiltViewModel(), navController: 
 
                 Text(
                     modifier = Modifier
-                        .clickable { navController.navigate(StackScreensInitial.SignIn.name) }
+                        .clickable { navController.navigate(StackScreensApp.SignIn.name) }
                         .padding(vertical = 10.dp),
                     text = "Não possui registro clique aqui",
                     style = TextStyle(

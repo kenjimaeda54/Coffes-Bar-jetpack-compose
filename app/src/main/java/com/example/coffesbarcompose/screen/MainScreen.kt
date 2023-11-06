@@ -15,8 +15,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,9 +26,7 @@ import com.example.coffesbarcompose.route.BottomBarScreen
 import com.example.coffesbarcompose.route.BottomCustomNavigation
 import com.example.coffesbarcompose.route.BottomScreens
 import com.example.coffesbarcompose.route.NavGraphApp
-import com.example.coffesbarcompose.route.NavGraphInitial
 import com.example.coffesbarcompose.route.StackScreensApp
-import com.example.coffesbarcompose.route.StackScreensInitial
 import com.example.coffesbarcompose.view_models.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -44,67 +40,43 @@ fun MainScreen(userViewModel: UserViewModel = hiltViewModel()) {
         navBackStackEntry?.destination?.route?.split("/") //porque a rota tem argumento estou fazendo  o split nmo /
     val stringRoutesStack = StackScreensApp.values().map { it.toString() }
     val stringBottomRoute = BottomScreens.screens().map { it.route }
+    val isAnonymous = userViewModel.isAnonymous
+    currentRoute?.get(0)?.let { Log.d("Route", it) }
 
 
-    if (!userViewModel.isAnonymous.value) {
-        Scaffold(
-            topBar = {
-                if (stringRoutesStack.contains(currentRoute?.get(0)) && currentRoute?.get(0) != StackScreensApp.PaymentFinished.name && currentRoute?.get(
-                        0
-                    ) != BottomBarScreen.Home.route
-                ) TopAppBar(
-                    title = { Text("") },
-                    navigationIcon = {
-                        Image(
-                            modifier = Modifier
-                                .size(15.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                },
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "image back",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                        )
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = Color.Transparent
+    Scaffold(
+        topBar = {
+            if (
+                stringRoutesStack.contains(currentRoute?.get(0)) && currentRoute?.get(0) != StackScreensApp.PaymentFinished.name && currentRoute?.get(
+                    0
+                ) != BottomBarScreen.Home.route && currentRoute?.get(0) != StackScreensApp.Login.name
+            ) TopAppBar(
+                title = { Text("") },
+                navigationIcon = {
+                    Image(
+                        modifier = Modifier
+                            .size(15.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            },
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "image back",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                     )
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color.Transparent
                 )
-            },
-            bottomBar = {
-                if (stringBottomRoute.contains(currentRoute?.get(0))) BottomCustomNavigation(
-                    navHostController = navController,
-                    navDestination = currentDestination
-                )
-            }) {
-            NavGraphApp(navController = navController)
-        }
-    } else {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("") },
-                    navigationIcon = {
-                        if (currentRoute != null) {
-                            if (currentRoute[0] != StackScreensInitial.Login.name) Image(
-                                modifier = Modifier
-                                    .size(15.dp)
-                                    .clickable {
-                                        navController.popBackStack()
-                                    },
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "image back",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = Color.Transparent
-                    )
-                )
-            }) {
-            NavGraphInitial(navController = navController)
-        }
+            )
+        },
+        bottomBar = {
+            if (stringBottomRoute.contains(currentRoute?.get(0))) BottomCustomNavigation(
+                navHostController = navController,
+                navDestination = currentDestination
+            )
+        }) {
+        NavGraphApp(navController = navController, isAnonymous = isAnonymous)
     }
-
 }
+
+

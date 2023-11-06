@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -56,7 +55,6 @@ import com.example.coffesbarcompose.mocks.coffeesMock
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.UpdateAvatarModel
 import com.example.coffesbarcompose.route.StackScreensApp
-import com.example.coffesbarcompose.route.StackScreensInitial
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
 import com.example.coffesbarcompose.view.AvatarPlaceHolder
 import com.example.coffesbarcompose.view.ButtonWithIcon
@@ -127,7 +125,8 @@ fun HomeScreen(
 
     fun handleGoOut() {
         userViewModel.goOutApp()
-        navController.navigate(StackScreensInitial.MainScreen.name)
+        navController.navigate(StackScreensApp.Login.name)
+
     }
 
     fun handleUpdateAvatar(avatar: AvatarModel) {
