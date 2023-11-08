@@ -516,7 +516,7 @@ fun TitlePlaceHolder(modifier: Modifier = Modifier) {
 - Para criar um outline  personalizado pode usar o BasicTextField, nele possibilita personalizarmos um decoration e também container
 - Para modificar o textfield  onde o usuário não visualiza a senha digitada pode usar o visualTransformation, nele temos a opção de passar PasswordVisualTransformation
 
-```klotin
+```kotlin
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class
@@ -614,7 +614,7 @@ fun CustomOutlineTextField(
 - LaunchedEffect e para lidar com swappableState que é uma função assíncrona coroutine, poderia usar o rememberCoroutineScope
 
 
-```klotin
+```kotlin
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RowOrders(
