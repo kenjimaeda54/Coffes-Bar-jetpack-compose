@@ -1,8 +1,8 @@
 package com.example.coffesbarcompose.screen.payment_resume
 
+import android.Manifest
 import android.app.Activity
 import android.widget.Toast
-import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,21 +42,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.models.AddressUserModel
 import com.example.coffesbarcompose.route.StackScreensApp
 import com.example.coffesbarcompose.utility.Format
 import com.example.coffesbarcompose.view.ButtonCommon
 import com.example.coffesbarcompose.view.ButtonCustomOutline
-import com.example.coffesbarcompose.view.ComposableLifecycle
 import com.example.coffesbarcompose.view.CustomOutlineTextField
 import com.example.coffesbarcompose.view.RowTitleAndSubTitle
 import com.example.coffesbarcompose.view_models.CartViewModel
 import com.example.coffesbarcompose.view_models.UserViewModel
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 
 //https://github.com/velmurugan-murugesan/JetpackCompose/blob/master/ObserveCurrentLocationJetpackCompose/app/src/main/java/com/example/observecurrentlocationjetpackcompose/MainActivity.kt
@@ -64,7 +61,7 @@ import kotlin.random.Random
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentResume(
-    navController: NavHostController,
+    navController: NavController,
     userViewModel: UserViewModel = hiltViewModel(),
     parentViewModel: CartViewModel
 ) {

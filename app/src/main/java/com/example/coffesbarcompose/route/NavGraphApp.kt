@@ -19,6 +19,7 @@ import com.example.coffesbarcompose.screen.payment_finished.PaymentFinished
 import com.example.coffesbarcompose.screen.payment_resume.PaymentResume
 import com.example.coffesbarcompose.screen.sign_in.SignIn
 import com.example.coffesbarcompose.view_models.CartViewModel
+import com.example.coffesbarcompose.view_models.CoffeesViewModel
 
 
 @Composable
@@ -56,11 +57,16 @@ fun NavGraphApp(navController: NavHostController, isAnonymous: MutableState<Bool
         composable(
             StackScreensApp.DetailsScreen.name + "/{coffeeId}",
             arguments = listOf(navArgument("coffeeId") { type = NavType.StringType })
-        ) {
-
+        ) { entry ->
+            val parentEntry = remember(entry) {
+                navController.getBackStackEntry(BottomBarScreen.Home.route)
+            }
+            val parentCartViewModel = hiltViewModel<CartViewModel>(parentEntry)
+            val parentCoffeesViewModel = hiltViewModel<CoffeesViewModel>(parentEntry)
             DetailsScreen(
-                navController = navController,
-                coffeeId = it.arguments?.getString("coffeeId")
+                coffeeId = entry.arguments?.getString("coffeeId"),
+                cartViewModel = parentCartViewModel,
+                coffeesViewModel = parentCoffeesViewModel
             )
         }
         composable(route = StackScreensApp.PaymentResume.name) { entry ->
@@ -72,7 +78,6 @@ fun NavGraphApp(navController: NavHostController, isAnonymous: MutableState<Bool
         }
 
         composable(route = StackScreensApp.PaymentFinished.name) {
-
             PaymentFinished(navController)
         }
 

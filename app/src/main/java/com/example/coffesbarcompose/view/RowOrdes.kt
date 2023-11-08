@@ -87,13 +87,11 @@ fun RowOrders(
     val sizePx = with(LocalDensity.current) { width.dp.toPx() }
     val anchors = mapOf(0f to 0, sizePx to 1) // Maps
 
-    suspend fun handleSnapTo() {
 
-    }
 
     //preciso retonar o valor para 0 assim nao corro risco deletar outro da lista que nao e oque desejo
     //launchedEffect permite trabalhar com courtines
-    if (swappableState.offset.value.toInt() > (widthPx - 1)) {
+    if (swappableState.offset.value.toInt() >= (widthPx - 100)) {
         LaunchedEffect(Unit) {
             actionDeleteOrder?.invoke()
 

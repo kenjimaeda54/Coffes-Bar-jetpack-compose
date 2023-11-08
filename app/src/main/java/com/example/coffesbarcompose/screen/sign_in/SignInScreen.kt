@@ -51,6 +51,7 @@ import coil.request.ImageRequest
 import com.example.coffesbarcompose.R
 import com.example.coffesbarcompose.models.AvatarModel
 import com.example.coffesbarcompose.models.UserModel
+import com.example.coffesbarcompose.route.BottomBarScreen
 import com.example.coffesbarcompose.route.StackScreensApp
 import com.example.coffesbarcompose.ui.theme.fontsInter
 import com.example.coffesbarcompose.ui.theme.fontsPacifico
@@ -209,7 +210,11 @@ fun SignIn(
             UserModel(name = "", email = email, password = password, avatarId = dataAvatar._id)
         usersViewModel.createUser(user) {
             if (it.data != null) {
-                navController.navigate(StackScreensApp.MainScreen.name)
+                navController.navigate(BottomBarScreen.Home.route) {
+                    popUpTo(StackScreensApp.Login.name) {
+                        inclusive = true
+                    }
+                }
             } else {
                 errorMessage = "Este email ja foi registrado na base"
             }
