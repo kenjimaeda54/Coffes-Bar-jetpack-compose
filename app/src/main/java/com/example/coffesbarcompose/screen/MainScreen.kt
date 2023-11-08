@@ -41,7 +41,7 @@ fun MainScreen(userViewModel: UserViewModel = hiltViewModel()) {
     val stringRoutesStack = StackScreensApp.values().map { it.toString() }
     val stringBottomRoute = BottomScreens.screens().map { it.route }
     val isAnonymous = userViewModel.isAnonymous
-    currentRoute?.get(0)?.let { Log.d("Route", it) }
+
 
 
     Scaffold(
