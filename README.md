@@ -1,4 +1,4 @@
-# Coffes-Bar-jetpack-compose
+# Coffes Bar
 Aplicativo markplace onde usuário pode selecionar os cafés para realizar a compra e retirar nas lojas credenciadas, após ele fazer a compra poderá olhar na aba de favoritos suas compras recentes
 
 ## Feature
@@ -1082,6 +1082,10 @@ fun RowOrders(
 
 
 ```
+
+
+## Link publicacao
+- [Linkedin](https://www.linkedin.com/posts/kenjimaeda1233_compose-android-swiftui-activity-7127826513076400129-6vAc?utm_source=share&utm_medium=member_desktop)
 
   
 
