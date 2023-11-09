@@ -1084,7 +1084,7 @@ fun RowOrders(
 ```
 
 
-## Link publicacao
+## Link publicação
 - [Linkedin](https://www.linkedin.com/posts/kenjimaeda1233_compose-android-swiftui-activity-7127826513076400129-6vAc?utm_source=share&utm_medium=member_desktop)
 
   
